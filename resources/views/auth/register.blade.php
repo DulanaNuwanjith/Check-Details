@@ -8,7 +8,7 @@
 
         <x-validation-errors class="mb-4" />
 
-        <form method="POST" action="{{ route('register') }}" onsubmit="return validateForm()">
+        <form method="POST" action="{{ route('register') }}" onsubmit="return validateForm()" enctype="multipart/form-data">
             @csrf
 
             <!-- First Name -->
@@ -80,6 +80,21 @@
                 </select>
                 <p id="roleError" class="text-sm text-red-500 mt-1 hidden">
                     Please select a role
+                </p>
+            </div>
+
+            <!-- Profile Photo -->
+            <div class="mt-4">
+                <x-label for="photo" value="Profile Photo (Optional)" />
+                <input id="photo" class="block mt-1 w-full text-sm text-gray-500
+                    file:mr-4 file:py-2 file:px-4
+                    file:rounded-md file:border-0
+                    file:text-sm file:font-semibold
+                    file:bg-blue-50 file:text-blue-700
+                    hover:file:bg-blue-100"
+                    type="file" name="photo" accept="image/jpeg,image/png,image/jpg" />
+                <p class="text-xs text-gray-500 mt-1">
+                    Max size: 1MB. Format: JPG, PNG
                 </p>
             </div>
 

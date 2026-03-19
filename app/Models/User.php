@@ -58,7 +58,13 @@ class User extends Authenticatable
      */
     protected $appends = [
         'profile_photo_url',
+        'name',
     ];
+
+    public function getNameAttribute()
+    {
+        return trim($this->first_name . ' ' . $this->last_name);
+    }
 
     /**
      * Get the attributes that should be cast.

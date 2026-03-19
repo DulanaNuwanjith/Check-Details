@@ -26,9 +26,10 @@ class CreateNewUser implements CreatesNewUsers
             'nic' => ['required', 'string', 'unique:users'],
             'role' => ['required', 'string'],
             'password' => $this->passwordRules(),
+            'photo' => ['nullable', 'mimes:jpg,jpeg,png', 'max:1024'],
         ])->validate();
 
-        return User::create([
+        $user = User::create([
             'first_name' => $input['first_name'],
             'last_name' => $input['last_name'],
             'email' => $input['email'],
@@ -36,5 +37,11 @@ class CreateNewUser implements CreatesNewUsers
             'role' => $input['role'],
             'password' => Hash::make($input['password']),
         ]);
+
+        if (isset($input['photo'])) {
+            $user->updateProfilePhoto($input['photo']);
+        }
+
+        return $user;
     }
 }
