@@ -1,4 +1,4 @@
-<div class="min-h-screen bg-gray-50 flex items-center justify-center p-4 sm:p-8 font-sans antialiased text-gray-900">
+<div class="min-h-screen bg-gradient-to-br from-blue-50 via-indigo-50 to-purple-50 flex items-center justify-center p-4 sm:p-8 font-sans antialiased text-gray-900">
     <div class="w-full max-w-5xl bg-white rounded-2xl shadow-xl flex flex-col md:flex-row overflow-hidden relative">
         
         <!-- Left Panel: Branding / Imagery -->
