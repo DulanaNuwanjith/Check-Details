@@ -1,9 +1,10 @@
 <x-guest-layout>
     <x-authentication-card>
 
-        <x-slot name="logo">
-            <x-authentication-card-logo />
-        </x-slot>
+        <div class="mb-8">
+            <h2 class="text-2xl font-bold text-gray-800">Create an Account</h2>
+            <p class="text-gray-500 mt-1 text-sm">Join us to start managing your check operations securely</p>
+        </div>
 
         <x-validation-errors class="mb-4" />
 
@@ -122,15 +123,15 @@
                 </div>
             @endif
 
-            <div class="flex items-center justify-end mt-4">
-                <a class="underline text-sm text-gray-600" href="{{ route('login') }}">
+            <div class="flex flex-col sm:flex-row items-center justify-between mt-8 mb-4">
+                <a class="underline text-sm text-gray-600 hover:text-blue-600 mb-4 sm:mb-0" href="{{ route('login') }}">
                     Already registered?
                 </a>
-
-                <x-button class="ms-4">
-                    Register
-                </x-button>
             </div>
+
+            <button type="submit" class="w-full flex justify-center py-3 px-4 border border-transparent rounded-lg shadow-md text-sm font-semibold text-white bg-blue-600 hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 transition duration-150 ease-in-out">
+                Register
+            </button>
         </form>
 
         <!-- VALIDATION SCRIPT -->
