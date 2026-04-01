@@ -2,18 +2,17 @@
 
 namespace App\Http\Controllers;
 
-use App\Models\Cheque;
+use App\Models\ActivityLog;
 use Illuminate\Http\Request;
 
-class ChequeController extends Controller
+class ActivityLogController extends Controller
 {
     /**
      * Display a listing of the resource.
      */
     public function index()
     {
-        $cheques = Cheque::latest()->paginate(10);
-        return view('cheque-detail.index', compact('cheques'));
+        //
     }
 
     /**
@@ -35,7 +34,7 @@ class ChequeController extends Controller
     /**
      * Display the specified resource.
      */
-    public function show(Cheque $cheque)
+    public function show(ActivityLog $activityLog)
     {
         //
     }
@@ -43,7 +42,7 @@ class ChequeController extends Controller
     /**
      * Show the form for editing the specified resource.
      */
-    public function edit(Cheque $cheque)
+    public function edit(ActivityLog $activityLog)
     {
         //
     }
@@ -51,7 +50,7 @@ class ChequeController extends Controller
     /**
      * Update the specified resource in storage.
      */
-    public function update(Request $request, Cheque $cheque)
+    public function update(Request $request, ActivityLog $activityLog)
     {
         //
     }
@@ -59,7 +58,7 @@ class ChequeController extends Controller
     /**
      * Remove the specified resource from storage.
      */
-    public function destroy(Cheque $cheque)
+    public function destroy(ActivityLog $activityLog)
     {
         //
     }

@@ -23,16 +23,16 @@
 </script>
 
 <!-- Sidebar Component -->
-<aside x-data="{ 
-        collapsed: window.__initialCollapsed, 
-        initialized: false, 
+<aside x-data="{
+        collapsed: window.__initialCollapsed,
+        initialized: false,
         open: false,
         toggle() {
             this.collapsed = !this.collapsed;
             localStorage.setItem('sidebarCollapsed', JSON.stringify(this.collapsed));
             document.documentElement.style.setProperty('--sidebar-width', this.collapsed ? '5rem' : '16rem');
         }
-    }" 
+    }"
     x-init="initialized = true"
     :class="[
         collapsed ? 'md:w-20' : 'md:w-64',
@@ -81,7 +81,7 @@
 
     <!-- Navigation -->
     <nav class="flex flex-col flex-1 p-3 space-y-1.5 overflow-y-auto scroll-hidden text-sm font-semibold text-gray-600" x-cloak>
-        
+
         <!-- Dashboard -->
         <a href="{{ route('dashboard') }}"
            class="flex items-center px-3 py-2.5 rounded-xl transition-all duration-200 group hover:bg-blue-50 hover:text-blue-600 {{ request()->routeIs('dashboard') ? 'bg-blue-50 text-blue-600' : '' }}"
@@ -91,8 +91,8 @@
         </a>
 
         <!-- Check Details -->
-        <a href="#"
-           class="flex items-center px-3 py-2.5 rounded-xl transition-all duration-200 group hover:bg-blue-50 hover:text-blue-600"
+        <a href="{{ route('cheques.index') }}"
+           class="flex items-center px-3 py-2.5 rounded-xl transition-all duration-200 group hover:bg-blue-50 hover:text-blue-600 {{ request()->routeIs('cheques.*') ? 'bg-blue-50 text-blue-600' : '' }}"
            :title="collapsed ? 'Check Details' : ''">
             <svg class="w-5 h-5 shrink-0 text-gray-400 group-hover:text-blue-600 transition-colors duration-200" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2m-3 7h3m-3 4h3m-6-4h.01M9 16h.01"></path></svg>
             <span x-show="!collapsed" class="ml-3 truncate">Check Details</span>
@@ -129,7 +129,7 @@
         <a href="{{ route('profile.show') }}"
            class="flex items-center px-3 py-2.5 rounded-xl transition-all duration-200 group hover:bg-white hover:shadow-sm text-gray-700 font-semibold"
            :title="collapsed ? 'Profile' : ''">
-            <img class="w-8 h-8 rounded-full shrink-0 object-cover border-2 border-white shadow-sm" 
+            <img class="w-8 h-8 rounded-full shrink-0 object-cover border-2 border-white shadow-sm"
                  src="{{ Auth::user() ? Auth::user()->profile_photo_url : 'https://ui-avatars.com/api/?name=User&color=7F9CF5&background=EBF4FF' }}" alt="{{ Auth::user()->name ?? 'Profile' }}" />
             <span x-show="!collapsed" class="ml-3 truncate">{{ Auth::user()->name ?? 'Profile' }}</span>
         </a>
