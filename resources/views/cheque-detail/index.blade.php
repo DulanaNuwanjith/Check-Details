@@ -127,7 +127,15 @@
                     <button @click="openModal = false" class="text-gray-400 hover:text-gray-600">✕</button>
                 </div>
 
-                <form method="POST" action="{{ route('cheques.store') }}">
+                <form method="POST" action="{{ route('cheques.store') }}"
+                      x-data="{
+        chequeType: 'received',
+        statuses: {
+            received: ['pending', 'deposited', 'cleared', 'bounced'],
+            issued: ['pending', 'issued', 'cleared', 'cancelled']
+        }
+      }">
+
                     @csrf
 
                     <div class="grid grid-cols-2 gap-4">
@@ -140,16 +148,19 @@
 
                         <input type="number" step="0.01" name="cheque_amount" placeholder="Amount" required class="p-2 border rounded-lg">
 
-                        <select name="cheque_type" class="p-2 border rounded-lg">
+                        <!-- Cheque Type -->
+                        <select name="cheque_type"
+                                x-model="chequeType"
+                                class="p-2 border rounded-lg">
                             <option value="received">Received</option>
                             <option value="issued">Issued</option>
                         </select>
 
+                        <!-- Dynamic Status -->
                         <select name="status" class="p-2 border rounded-lg">
-                            <option value="pending">Pending</option>
-                            <option value="deposited">Deposited</option>
-                            <option value="cleared">Cleared</option>
-                            <option value="bounced">Bounced</option>
+                            <template x-for="status in statuses[chequeType]" :key="status">
+                                <option :value="status" x-text="status.charAt(0).toUpperCase() + status.slice(1)"></option>
+                            </template>
                         </select>
 
                         <textarea name="remarks" placeholder="Remarks"
