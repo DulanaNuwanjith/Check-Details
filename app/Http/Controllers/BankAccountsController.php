@@ -30,7 +30,7 @@ class BankAccountsController extends Controller
     {
         // Check if this is an update (hidden input "_method" = PATCH)
         $isUpdate = $request->has('_method') && $request->_method === 'PATCH';
-        $id = $isUpdate ? $request->route('bank_account') : null; // make sure route param name matches
+        $id = $isUpdate ? $request->route('bank_account') : null; // make sure the route param name matches
 
         // Validation rules
         $rules = [
@@ -137,16 +137,16 @@ class BankAccountsController extends Controller
     /**
      * Remove the specified resource from storage.
      */
-    public function destroy(BankAccounts $bankAccounts): ?RedirectResponse
+    public function destroy(BankAccounts $bank_account): ?RedirectResponse
     {
         try {
-            $bankAccounts->delete();
+            $bank_account->delete();
             return redirect()->route('bank-accounts.index')
                 ->with('success', 'Bank account deleted successfully.');
         } catch (Exception $e) {
             Log::error('BankAccount delete error: ' . $e->getMessage(), [
                 'trace' => $e->getTraceAsString(),
-                'id' => $bankAccounts->id,
+                'id' => $bank_account->id,
             ]);
 
             return redirect()->back()
