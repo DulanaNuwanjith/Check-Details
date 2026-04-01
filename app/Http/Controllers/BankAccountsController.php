@@ -30,7 +30,7 @@ class BankAccountsController extends Controller
     {
         // Check if this is an update (hidden input "_method" = PATCH)
         $isUpdate = $request->has('_method') && $request->_method === 'PATCH';
-        $id = $isUpdate ? $request->route('bank_accounts') : null;
+        $id = $isUpdate ? $request->route('bank_account') : null; // make sure route param name matches
 
         // Validation rules
         $rules = [
@@ -70,7 +70,7 @@ class BankAccountsController extends Controller
                 $message = 'Bank account updated successfully.';
             } else {
                 // Create a new account
-                BankAccounts::create([
+                $bankAccount = BankAccounts::create([
                     'bank_name' => $request->bank_name,
                     'branch_name' => $request->branch_name,
                     'account_name' => $request->account_name,
@@ -79,6 +79,11 @@ class BankAccountsController extends Controller
                     'is_active' => $request->is_active,
                     'remarks' => $request->remarks,
                 ]);
+
+                // Manually add an activity log since the model event may not fire
+                if ($bankAccount) {
+                    BankAccounts::logActivity('created', null, $bankAccount->toArray(), $bankAccount);
+                }
 
                 $message = 'Bank account added successfully.';
             }
