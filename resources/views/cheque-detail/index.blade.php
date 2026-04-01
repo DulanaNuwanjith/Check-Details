@@ -124,34 +124,46 @@
 
                 <div class="flex justify-between items-center mb-4">
                     <h3 class="text-xl font-bold">Add New Cheque</h3>
-                    <button @click="openModal = false" class="text-gray-400 hover:text-gray-600">✕</button>
+                    <button @click="openModal = false" class="text-gray-400 hover:text-gray-600 text-xl">✕</button>
                 </div>
 
                 <form method="POST" action="{{ route('cheques.store') }}"
                       x-data="{
-        chequeType: 'received',
-        statuses: {
-            received: ['pending', 'deposited', 'cleared', 'bounced'],
-            issued: ['pending', 'issued', 'cleared', 'cancelled']
-        }
-      }">
+                chequeType: 'received',
+                statuses: {
+                    received: ['pending', 'deposited', 'cleared', 'bounced'],
+                    issued: ['pending', 'issued', 'cleared', 'cancelled']
+                }
+              }">
 
                     @csrf
 
                     <div class="grid grid-cols-2 gap-4">
 
-                        <input type="text" name="cheque_no" placeholder="Cheque No" required class="p-2 border rounded-lg">
+                        <!-- Cheque No -->
+                        <input type="text" name="cheque_no" placeholder="Cheque No" required
+                               class="p-2 border rounded-lg">
 
-                        <input type="date" name="cheque_date" required class="p-2 border rounded-lg">
+                        <!-- Cheque Date -->
+                        <input type="date" name="cheque_date" required
+                               class="p-2 border rounded-lg">
 
-                        <input type="text" name="bank_name" placeholder="Bank Name" required class="p-2 border rounded-lg">
+                        <!-- Bank Account Dropdown -->
+                        <select name="bank_id" required class="p-2 border rounded-lg">
+                            <option value="" disabled selected>Select Bank Account</option>
+                            @foreach($bankAccounts as $account)
+                                <option value="{{ $account->id }}">
+                                    {{ $account->bank_name }} - {{ $account->account_number }}
+                                </option>
+                            @endforeach
+                        </select>
 
-                        <input type="number" step="0.01" name="cheque_amount" placeholder="Amount" required class="p-2 border rounded-lg">
+                        <!-- Cheque Amount -->
+                        <input type="number" step="0.01" name="cheque_amount" placeholder="Amount" required
+                               class="p-2 border rounded-lg">
 
                         <!-- Cheque Type -->
-                        <select name="cheque_type"
-                                x-model="chequeType"
-                                class="p-2 border rounded-lg">
+                        <select name="cheque_type" x-model="chequeType" class="p-2 border rounded-lg">
                             <option value="received">Received</option>
                             <option value="issued">Issued</option>
                         </select>
@@ -163,21 +175,26 @@
                             </template>
                         </select>
 
+                        <!-- Remarks -->
                         <textarea name="remarks" placeholder="Remarks"
                                   class="col-span-2 p-2 border rounded-lg"></textarea>
 
                     </div>
 
                     <div class="flex justify-end gap-3 mt-6">
+
+                        <!-- Cancel Button -->
                         <button type="button" @click="openModal = false"
-                                class="px-4 py-2 border rounded-lg">
+                                class="px-5 py-2 bg-gray-200 text-gray-700 rounded-full font-semibold hover:bg-gray-300 transition">
                             Cancel
                         </button>
 
+                        <!-- Save Button -->
                         <button type="submit"
-                                class="bg-blue-600 text-white px-5 py-2 rounded-lg hover:bg-blue-700">
+                                class="px-5 py-2 bg-blue-600 text-white rounded-full font-semibold hover:bg-blue-700 transition">
                             Save Cheque
                         </button>
+
                     </div>
 
                 </form>

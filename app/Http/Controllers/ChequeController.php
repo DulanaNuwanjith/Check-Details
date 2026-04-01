@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\BankAccounts;
 use App\Models\Cheque;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
@@ -14,15 +15,8 @@ class ChequeController extends Controller
     public function index()
     {
         $cheques = Cheque::latest()->paginate(10);
-        return view('cheque-detail.index', compact('cheques'));
-    }
-
-    /**
-     * Show the form for creating a new resource.
-     */
-    public function create()
-    {
-        //
+        $bankAccounts = BankAccounts::all();
+        return view('cheque-detail.index', compact('cheques', 'bankAccounts'));
     }
 
     /**

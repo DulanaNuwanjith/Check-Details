@@ -20,6 +20,7 @@ return new class extends Migration
             $table->decimal('cheque_amount', 15, 2);
 
             // Bank details
+            $table->unsignedBigInteger('bank_account_id')->nullable()->index(); // FK to bank_accounts
             $table->string('bank_name');
             $table->string('branch_name')->nullable();
             $table->string('account_no')->nullable();
