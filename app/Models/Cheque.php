@@ -8,6 +8,8 @@ use Illuminate\Support\Facades\Auth;
 /**
  * @method static latest()
  * @method static create(array $data)
+ * @method static count()
+ * @method static where(string $string, string $string1)
  */
 class Cheque extends Model
 {

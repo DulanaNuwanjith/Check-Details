@@ -7,6 +7,7 @@ use Illuminate\Database\Eloquent\Relations\BelongsTo;
 
 /**
  * @method static create(array $array)
+ * @method static latest()
  */
 class ActivityLog extends Model
 {

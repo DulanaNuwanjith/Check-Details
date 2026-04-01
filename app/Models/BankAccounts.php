@@ -9,6 +9,8 @@ use App\Models\ActivityLog;
 /**
  * @method static findOrFail(int $id)
  * @method static create(array $array)
+ * @method static count()
+ * @method static where(string $string, int $int)
  */
 class BankAccounts extends Model
 {
