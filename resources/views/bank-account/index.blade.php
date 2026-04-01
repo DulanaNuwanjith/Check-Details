@@ -75,22 +75,38 @@
                                     <span class="px-3 py-1 bg-red-100 text-red-700 rounded-full text-xs font-bold">Inactive</span>
                                 @endif
                             </td>
-                            <td class="px-6 py-4 text-center flex justify-center gap-2">
-                                <button @click="bankForm = @json($account); openBankModal = true" class="text-blue-500 hover:underline text-sm">Edit</button>
+                            <td class="px-6 py-4 text-center flex justify-center gap-3">
 
+                                <!-- Edit Button -->
+                                <button
+                                    @click="bankForm = @json($account); openBankModal = true"
+                                    class="bg-blue-500 text-white px-4 py-1.5 rounded-full text-sm font-medium shadow hover:bg-blue-600 transition duration-200">
+                                    Edit
+                                </button>
+
+                                <!-- Delete Button -->
                                 <form method="POST" action="{{ route('bank-accounts.destroy', $account->id) }}">
                                     @csrf
                                     @method('DELETE')
-                                    <button class="text-red-500 hover:underline text-sm">Delete</button>
+                                    <button
+                                        type="submit"
+                                        class="bg-red-500 text-white px-4 py-1.5 rounded-full text-sm font-medium shadow hover:bg-red-600 transition duration-200">
+                                        Delete
+                                    </button>
                                 </form>
 
+                                <!-- Toggle Status Button -->
                                 <form method="POST" action="{{ route('bank-accounts.toggle-status', $account->id) }}">
                                     @csrf
                                     @method('PATCH')
-                                    <button class="text-yellow-600 hover:underline text-sm">
+                                    <button
+                                        type="submit"
+                                        class="{{ $account->is_active ? 'bg-yellow-500 hover:bg-yellow-600' : 'bg-green-500 hover:bg-green-600' }}
+                   text-white px-4 py-1.5 rounded-full text-sm font-medium shadow transition duration-200">
                                         {{ $account->is_active ? 'Deactivate' : 'Activate' }}
                                     </button>
                                 </form>
+
                             </td>
                         </tr>
                     @empty
