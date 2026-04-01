@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\BankAccountsController;
 use App\Http\Controllers\ChequeController;
 use Illuminate\Support\Facades\Route;
 
@@ -18,4 +19,7 @@ Route::middleware([
 
     //Cheque Management
     Route::resource('cheques', ChequeController::class);
+
+    //Bank Accounts
+    Route::resource('bank-accounts', BankAccountsController::class);
 });
