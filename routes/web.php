@@ -13,7 +13,7 @@ Route::middleware([
     config('jetstream.auth_session'),
     'verified',
 ])->group(function () {
-    Route::get('/dashboard', function () {
+    Route::get('/dashboard', static function () {
         return view('dashboard');
     })->name('dashboard');
 
@@ -22,4 +22,5 @@ Route::middleware([
 
     //Bank Accounts
     Route::resource('bank-accounts', BankAccountsController::class);
+    Route::post('bank-accounts/toggle-status', [BankAccountsController::class, 'toggleStatus'])->name('bank-accounts.toggle-status');
 });

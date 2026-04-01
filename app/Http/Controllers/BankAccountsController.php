@@ -102,9 +102,37 @@ class BankAccountsController extends Controller
     }
 
     /**
+     * Toggle the active/inactive status of a bank account.
+     *
+     * @param int $id
+     * @return RedirectResponse|null
+     */
+    public function toggleStatus(int $id): ?RedirectResponse
+    {
+        try {
+            $bankAccount = BankAccounts::findOrFail($id);
+            $bankAccount->is_active = !$bankAccount->is_active;
+            $bankAccount->save();
+
+            $status = $bankAccount->is_active ? 'activated' : 'deactivated';
+
+            return redirect()->route('bank-accounts.index')
+                ->with('success', "Bank account {$status} successfully.");
+        } catch (Exception $e) {
+            Log::error('BankAccount toggle status error: ' . $e->getMessage(), [
+                'trace' => $e->getTraceAsString(),
+                'id' => $id,
+            ]);
+
+            return redirect()->back()
+                ->with('error', 'Failed to change bank account status.');
+        }
+    }
+
+    /**
      * Remove the specified resource from storage.
      */
-    public function destroy(BankAccounts $bankAccounts)
+    public function destroy(BankAccounts $bankAccounts): ?RedirectResponse
     {
         try {
             $bankAccounts->delete();

@@ -6,6 +6,9 @@ use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Facades\Auth;
 use App\Models\ActivityLog;
 
+/**
+ * @method static findOrFail(int $id)
+ */
 class BankAccounts extends Model
 {
     protected $fillable = [
