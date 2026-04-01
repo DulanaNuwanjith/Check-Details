@@ -17,6 +17,7 @@ return new class extends Migration
             // Core cheque details
             $table->string('cheque_no')->unique()->index();
             $table->date('cheque_date'); // Date written on check
+            $table->date('cheque_exp_date')->nullable();
             $table->decimal('cheque_amount', 15, 2);
 
             // Bank details

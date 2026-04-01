@@ -7,13 +7,16 @@ use Illuminate\Support\Facades\Auth;
 
 /**
  * @method static latest()
+ * @method static create(array $data)
  */
 class Cheque extends Model
 {
     protected $fillable = [
         'cheque_no',
         'cheque_date',
+        'cheque_exp_date',
         'cheque_amount',
+        'bank_account_id',
         'bank_name',
         'branch_name',
         'account_no',

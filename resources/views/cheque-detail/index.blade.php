@@ -122,7 +122,7 @@
             <div @click.away="openModal = false"
                  class="bg-white rounded-2xl w-full max-w-2xl p-6 shadow-xl">
 
-                <div class="flex justify-between items-center mb-4">
+                <div class="flex justify-between items-center mb-6">
                     <h3 class="text-xl font-bold">Add New Cheque</h3>
                     <button @click="openModal = false" class="text-gray-400 hover:text-gray-600 text-xl">✕</button>
                 </div>
@@ -141,66 +141,94 @@
                     <div class="grid grid-cols-2 gap-4">
 
                         <!-- Cheque No -->
-                        <input type="text" name="cheque_no" placeholder="Cheque No" required
-                               class="p-2 border rounded-lg">
+                        <div class="flex flex-col">
+                            <label for="cheque_no" class="mb-1 text-gray-700 font-medium">Cheque No</label>
+                            <input type="text" name="cheque_no" id="cheque_no" required
+                                   class="p-3 border rounded-lg focus:ring-2 focus:ring-blue-400 focus:outline-none">
+                        </div>
 
                         <!-- Cheque Date -->
-                        <input type="date" name="cheque_date" required
-                               class="p-2 border rounded-lg">
+                        <div class="flex flex-col">
+                            <label for="cheque_date" class="mb-1 text-gray-700 font-medium">Cheque Date</label>
+                            <input type="date" name="cheque_date" id="cheque_date" required
+                                   class="p-3 border rounded-lg focus:ring-2 focus:ring-blue-400 focus:outline-none">
+                        </div>
+
+                        <!-- Cheque Expiry Date (optional) -->
+                        <div class="flex flex-col">
+                            <label for="cheque_exp_date" class="mb-1 text-gray-700 font-medium">Cheque Expiry Date</label>
+                            <input type="date" name="cheque_exp_date" id="cheque_exp_date"
+                                   class="p-3 border rounded-lg focus:ring-2 focus:ring-blue-400 focus:outline-none">
+                        </div>
 
                         <!-- Bank Account Dropdown -->
-                        <select name="bank_id" required class="p-2 border rounded-lg">
-                            <option value="" disabled selected>Select Bank Account</option>
-                            @foreach($bankAccounts as $account)
-                                <option value="{{ $account->id }}">
-                                    {{ $account->bank_name }} - {{ $account->account_number }}
-                                </option>
-                            @endforeach
-                        </select>
+                        <div class="flex flex-col">
+                            <label for="bank_account_id" class="mb-1 text-gray-700 font-medium">Bank Account</label>
+                            <select name="bank_account_id" id="bank_account_id" required
+                                    class="p-3 border rounded-lg focus:ring-2 focus:ring-blue-400 focus:outline-none">
+                                <option value="" disabled selected>Select Bank Account</option>
+                                @foreach($bankAccounts as $account)
+                                    <option value="{{ $account->id }}">
+                                        {{ $account->bank_name }} - {{ $account->account_number }}
+                                    </option>
+                                @endforeach
+                            </select>
+                        </div>
 
                         <!-- Cheque Amount -->
-                        <input type="number" step="0.01" name="cheque_amount" placeholder="Amount" required
-                               class="p-2 border rounded-lg">
+                        <div class="flex flex-col">
+                            <label for="cheque_amount" class="mb-1 text-gray-700 font-medium">Amount</label>
+                            <input type="number" step="0.01" name="cheque_amount" id="cheque_amount" required
+                                   class="p-3 border rounded-lg focus:ring-2 focus:ring-blue-400 focus:outline-none">
+                        </div>
 
                         <!-- Cheque Type -->
-                        <select name="cheque_type" x-model="chequeType" class="p-2 border rounded-lg">
-                            <option value="received">Received</option>
-                            <option value="issued">Issued</option>
-                        </select>
+                        <div class="flex flex-col">
+                            <label for="cheque_type" class="mb-1 text-gray-700 font-medium">Cheque Type</label>
+                            <select name="cheque_type" id="cheque_type" x-model="chequeType"
+                                    class="p-3 border rounded-lg focus:ring-2 focus:ring-blue-400 focus:outline-none">
+                                <option value="received">Received</option>
+                                <option value="issued">Issued</option>
+                            </select>
+                        </div>
 
                         <!-- Dynamic Status -->
-                        <select name="status" class="p-2 border rounded-lg">
-                            <template x-for="status in statuses[chequeType]" :key="status">
-                                <option :value="status" x-text="status.charAt(0).toUpperCase() + status.slice(1)"></option>
-                            </template>
-                        </select>
+                        <div class="flex flex-col">
+                            <label for="status" class="mb-1 text-gray-700 font-medium">Status</label>
+                            <select name="status" id="status"
+                                    class="p-3 border rounded-lg focus:ring-2 focus:ring-blue-400 focus:outline-none">
+                                <template x-for="status in statuses[chequeType]" :key="status">
+                                    <option :value="status" x-text="status.charAt(0).toUpperCase() + status.slice(1)"></option>
+                                </template>
+                            </select>
+                        </div>
 
                         <!-- Remarks -->
-                        <textarea name="remarks" placeholder="Remarks"
-                                  class="col-span-2 p-2 border rounded-lg"></textarea>
+                        <div class="flex flex-col col-span-2">
+                            <label for="remarks" class="mb-1 text-gray-700 font-medium">Remarks</label>
+                            <textarea name="remarks" id="remarks" placeholder="Remarks"
+                                      class="p-3 border rounded-lg focus:ring-2 focus:ring-blue-400 focus:outline-none"></textarea>
+                        </div>
 
                     </div>
 
                     <div class="flex justify-end gap-3 mt-6">
-
                         <!-- Cancel Button -->
                         <button type="button" @click="openModal = false"
-                                class="px-5 py-2 bg-gray-200 text-gray-700 rounded-full font-semibold hover:bg-gray-300 transition">
+                                class="px-6 py-2 bg-gray-200 text-gray-700 rounded-full font-semibold hover:bg-gray-300 transition">
                             Cancel
                         </button>
 
                         <!-- Save Button -->
                         <button type="submit"
-                                class="px-5 py-2 bg-blue-600 text-white rounded-full font-semibold hover:bg-blue-700 transition">
+                                class="px-6 py-2 bg-blue-600 text-white rounded-full font-semibold hover:bg-blue-700 transition">
                             Save Cheque
                         </button>
-
                     </div>
 
                 </form>
             </div>
         </div>
-
     </main>
 </div>
 
