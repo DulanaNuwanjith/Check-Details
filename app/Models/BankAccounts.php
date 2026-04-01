@@ -8,6 +8,7 @@ use App\Models\ActivityLog;
 
 /**
  * @method static findOrFail(int $id)
+ * @method static create(array $array)
  */
 class BankAccounts extends Model
 {

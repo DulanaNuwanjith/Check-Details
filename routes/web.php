@@ -22,5 +22,5 @@ Route::middleware([
 
     //Bank Accounts
     Route::resource('bank-accounts', BankAccountsController::class);
-    Route::post('bank-accounts/toggle-status', [BankAccountsController::class, 'toggleStatus'])->name('bank-accounts.toggle-status');
-});
+    Route::patch('bank-accounts/{id}/toggle-status', [BankAccountsController::class, 'toggleStatus'])
+        ->name('bank-accounts.toggle-status');});
