@@ -30,7 +30,7 @@
 
 <!-- Main Content -->
 <div class="flex-1 flex flex-col h-screen overflow-hidden"
-     x-data="{ openModal: false, viewModal: false, selectedCheque: null }">
+     x-data="{ openModal: false, viewModal: false, editModal: false, statusModal: false, selectedCheque: null }">
 
     <!-- Header -->
     <header class="bg-white/80 backdrop-blur-md border-b border-gray-100 flex items-center justify-between px-8 py-5 sticky top-0 z-10">
@@ -103,11 +103,62 @@
                             </td>
 
                             <td class="px-6 py-4 text-center">
-                                <button
-                                    @click="selectedCheque = {{ $cheque->toJson() }}; viewModal = true"
-                                    class="text-blue-500 hover:underline text-sm">
-                                    View
-                                </button>
+                                <div class="flex justify-center gap-x-2">
+                                    <!-- View Button -->
+                                    <button
+                                        @click="selectedCheque = {{ $cheque->toJson() }}; viewModal = true"
+                                        class="px-3 py-1 bg-blue-100 text-blue-700 rounded-full text-xs font-bold hover:bg-blue-200 transition">
+                                        View
+                                    </button>
+
+                                    <!-- Edit Button -->
+                                    <button
+                                        @click="selectedCheque = {{ $cheque->toJson() }}; editModal = true"
+                                        class="px-3 py-1 bg-yellow-100 text-yellow-700 rounded-full text-xs font-bold hover:bg-yellow-200 transition">
+                                        Edit
+                                    </button>
+
+                                    <!-- Change Status Dropdown -->
+                                    <div x-data="{
+                                                    openStatus: false,
+                                                    selectedStatus: '{{ $cheque->status }}',
+                                                    dropdownTop: 0,
+                                                    dropdownLeft: 0,
+                                                    toggleDropdown(event) {
+                                                        this.dropdownTop = event.target.getBoundingClientRect().top - 8; // slightly above
+                                                        this.dropdownLeft = event.target.getBoundingClientRect().left;
+                                                        this.openStatus = !this.openStatus;
+                                                    }
+                                                }" class="relative inline-block">
+
+                                        <!-- Change Status Button -->
+                                        <button @click="toggleDropdown($event)"
+                                                class="px-3 py-1 bg-green-100 text-green-700 rounded-full text-xs font-bold hover:bg-green-200 transition">
+                                            Change Status
+                                        </button>
+
+                                        <!-- Dropdown -->
+                                        <div x-show="openStatus"
+                                             @click.away="openStatus = false"
+                                             x-transition
+                                             style="position: fixed; top: 0; left: 0; z-index: 9999;"
+                                             :style="`top: ${dropdownTop}px; left: ${dropdownLeft}px;`"
+                                             class="w-36 bg-white border border-gray-200 rounded-lg shadow-lg">
+
+                                            <template x-for="status in {{ $cheque->cheque_type === 'received' ? json_encode(['pending','deposited','cleared','bounced']) : json_encode(['pending','issued','cleared','cancelled']) }}" :key="status">
+                                                <form :action="`/cheques/{{ $cheque->id }}/status`" method="POST">
+                                                    @csrf
+                                                    @method('PATCH')
+                                                    <input type="hidden" name="status" :value="status">
+                                                    <button type="submit"
+                                                            class="w-full text-left px-4 py-2 hover:bg-green-100 transition text-sm font-medium"
+                                                            x-text="status.charAt(0).toUpperCase() + status.slice(1)">
+                                                    </button>
+                                                </form>
+                                            </template>
+                                        </div>
+                                    </div>
+                                </div>
                             </td>
                         </tr>
                     @empty
