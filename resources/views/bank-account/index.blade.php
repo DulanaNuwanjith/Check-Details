@@ -48,7 +48,17 @@
             <p class="text-sm text-gray-500">Manage your bank accounts</p>
         </div>
 
-        <button @click="bankForm = {}; openBankModal = true"
+        <button @click="
+                            bankForm = {
+                                bank_name: '',
+                                branch_name: '',
+                                bank_code: '',
+                                company_name: '',
+                                is_active: 1,
+                                remarks: ''
+                            };
+                            openBankModal = true;
+                        "
                 class="bg-green-600 text-white px-5 py-2.5 rounded-xl hover:bg-green-700">
             + Add Bank
         </button>
@@ -94,7 +104,18 @@
 
                                 <!-- EDIT -->
                                 <button
-                                    @click="bankForm = @json($account); openBankModal = true"
+                                    @click="
+                                                bankForm = {
+                                                    id: {{ $account->id }},
+                                                    bank_name: '{{ addslashes($account->bank_name) }}',
+                                                    branch_name: '{{ addslashes($account->branch_name) }}',
+                                                    bank_code: '{{ addslashes($account->bank_code) }}',
+                                                    company_name: '{{ addslashes($account->company_name) }}',
+                                                    is_active: {{ $account->is_active ? 1 : 0 }},
+                                                    remarks: '{{ addslashes($account->remarks) }}'
+                                                };
+                                                openBankModal = true;
+                                            "
                                     class="bg-blue-500 text-white px-3 py-1 rounded-full text-sm hover:bg-blue-600">
                                     Edit
                                 </button>
@@ -154,8 +175,10 @@
                 </div>
 
                 <!-- FORM -->
-                <form :action="bankForm.id ? `/bank-accounts/${bankForm.id}` : '{{ route('bank-accounts.store') }}'"
-                      method="POST">
+                <form :action="bankForm.id
+                                ? `/bank-accounts/${bankForm.id}`
+                                : '{{ route('bank-accounts.store') }}'"
+                                                            method="POST">
                     @csrf
                     <template x-if="bankForm.id">
                         <input type="hidden" name="_method" value="PATCH">
@@ -165,27 +188,27 @@
 
                         <input type="text" name="bank_name"
                                placeholder="Bank Name"
-                               :value="bankForm.bank_name"
+                               x-model="bankForm.bank_name"
                                required class="p-2 border rounded-lg">
 
                         <input type="text" name="branch_name"
                                placeholder="Branch Name"
-                               :value="bankForm.branch_name"
+                               x-model="bankForm.branch_name"
                                class="p-2 border rounded-lg">
 
                         <input type="text" name="bank_code"
                                placeholder="Bank Code"
-                               :value="bankForm.bank_code"
+                               x-model="bankForm.bank_code"
                                class="p-2 border rounded-lg">
 
                         <input type="text" name="company_name"
                                placeholder="Company Name"
-                               :value="bankForm.company_name"
+                               x-model="bankForm.company_name"
                                required class="p-2 border rounded-lg">
 
                         <select name="is_active"
                                 class="p-2 border rounded-lg col-span-2"
-                                :value="bankForm.is_active">
+                                x-model="bankForm.is_active">
                             <option value="1">Active</option>
                             <option value="0">Inactive</option>
                         </select>
@@ -193,7 +216,7 @@
                         <textarea name="remarks"
                                   placeholder="Remarks"
                                   class="col-span-2 p-2 border rounded-lg"
-                                  x-text="bankForm.remarks"></textarea>
+                                  x-model="bankForm.remarks"></textarea>
 
                     </div>
 
