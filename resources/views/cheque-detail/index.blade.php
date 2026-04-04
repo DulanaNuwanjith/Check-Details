@@ -79,7 +79,55 @@
 
 <!-- Main Content -->
 <div class="flex-1 flex flex-col h-screen overflow-hidden"
-     x-data="{ openModal: false, viewModal: false, editModal: false, statusModal: false, selectedCheque: null }">
+     x-data="{ 
+        openModal: false, 
+        viewModal: false, 
+        selectedCheque: null,
+        statuses: {
+            issued: ['pending', 'issued', 'cleared', 'cancelled'],
+            received: ['pending', 'deposited', 'cleared', 'bounced']
+        },
+        chequeForm: {
+            id: '',
+            cheque_no: '',
+            cheque_date: '',
+            cheque_exp_date: '',
+            bank_account_id: '',
+            cheque_amount: '',
+            cheque_type: 'issued',
+            status: 'pending',
+            deposit_date: '',
+            realization_date: '',
+            bounce_date: '',
+            bank_charges: '0',
+            penalty_amount: '0',
+            reference_no: '',
+            remarks: '',
+            cheque_deposit_type: '',
+            cash_person: ''
+        },
+        resetForm() {
+            this.chequeForm = {
+                id: '',
+                cheque_no: '',
+                cheque_date: '',
+                cheque_exp_date: '',
+                bank_account_id: '',
+                cheque_amount: '',
+                cheque_type: 'issued',
+                status: 'pending',
+                deposit_date: '',
+                realization_date: '',
+                bounce_date: '',
+                bank_charges: '0',
+                penalty_amount: '0',
+                reference_no: '',
+                remarks: '',
+                cheque_deposit_type: '',
+                cash_person: ''
+            };
+        }
+     }">
 
     <!-- Header -->
     <header
@@ -89,7 +137,7 @@
             <p class="text-sm text-gray-500 font-medium">Manage issued and received cheques</p>
         </div>
 
-        <button @click="openModal = true"
+        <button @click="resetForm(); openModal = true"
                 class="bg-blue-600 text-white px-5 py-2.5 rounded-xl font-semibold shadow hover:bg-blue-700 transition">
             + Add New Cheque
         </button>
@@ -164,24 +212,49 @@
 
                                     <!-- Edit Button -->
                                     <button
-                                        @click="selectedCheque = {{ $cheque->toJson() }}; editModal = true"
+                                        @click="
+                                            let c = {{ $cheque->toJson() }};
+                                            chequeForm = {
+                                                id: c.id,
+                                                cheque_no: c.cheque_no,
+                                                cheque_date: c.cheque_date ? c.cheque_date.split(' ')[0] : '',
+                                                cheque_exp_date: c.cheque_exp_date ? c.cheque_exp_date.split(' ')[0] : '',
+                                                bank_account_id: c.bank_account_id,
+                                                cheque_amount: c.cheque_amount,
+                                                cheque_type: c.cheque_type,
+                                                status: c.status,
+                                                deposit_date: c.deposit_date ? c.deposit_date.split(' ')[0] : '',
+                                                realization_date: c.realization_date ? c.realization_date.split(' ')[0] : '',
+                                                bounce_date: c.bounce_date ? c.bounce_date.split(' ')[0] : '',
+                                                bank_charges: c.bank_charges,
+                                                penalty_amount: c.penalty_amount,
+                                                reference_no: c.reference_no,
+                                                remarks: c.remarks
+                                            };
+                                            let crossType = c.cheque_type_cross_cheque || '';
+                                            if (crossType.startsWith('Cash - ')) {
+                                                chequeForm.cheque_deposit_type = 'cash';
+                                                chequeForm.cash_person = crossType.replace('Cash - ', '');
+                                            } else {
+                                                chequeForm.cheque_deposit_type = crossType;
+                                                chequeForm.cash_person = '';
+                                            }
+                                            openModal = true;
+                                        "
                                         class="px-3 py-1 bg-yellow-100 text-yellow-700 rounded-full text-xs font-bold hover:bg-yellow-200 transition">
                                         Edit
                                     </button>
 
-                                    <!-- Change Status Dropdown -->
-                                    <div x-data="{
-                                                    openStatus: false,
-                                                    selectedStatus: '{{ $cheque->status }}',
-                                                    dropdownTop: 0,
-                                                    dropdownLeft: 0,
-                                                    toggleDropdown(event) {
-                                                        this.dropdownTop = event.target.getBoundingClientRect().top - 8; // slightly above
-                                                        this.dropdownLeft = event.target.getBoundingClientRect().left;
-                                                        this.openStatus = !this.openStatus;
-                                                    }
-                                                }" class="relative inline-block">
-                                    </div>
+                                    <!-- Delete Button -->
+                                    <form method="POST" action="{{ route('cheques.destroy', $cheque->id) }}"
+                                          onsubmit="confirmDelete(event, this)">
+                                        @csrf
+                                        @method('DELETE')
+                                        <button type="submit"
+                                                class="px-3 py-1 bg-red-100 text-red-700 rounded-full text-xs font-bold hover:bg-red-200 transition">
+                                            Delete
+                                        </button>
+                                    </form>
                                 </div>
                             </td>
                         </tr>
@@ -211,19 +284,15 @@
                 <div class="overflow-y-auto p-6">
 
                     <div class="flex justify-between items-center mb-6">
-                        <h3 class="text-xl font-bold">Add New Cheque</h3>
+                        <h3 class="text-xl font-bold" x-text="chequeForm.id ? 'Edit Cheque' : 'Add New Cheque'"></h3>
                         <button @click="openModal = false" class="text-gray-400 hover:text-gray-600 text-xl">✕</button>
                     </div>
 
-                    <form method="POST" action="{{ route('cheques.store') }}"
-                          x-data="{
-                    chequeType: 'issued',
-                    statuses: {
-                        issued: ['pending', 'issued', 'cleared', 'cancelled'],
-                        received: ['pending', 'deposited', 'cleared', 'bounced']
-                    }
-                  }">
+                    <form method="POST" :action="chequeForm.id ? `/cheques/${chequeForm.id}` : '{{ route('cheques.store') }}'">
                         @csrf
+                        <template x-if="chequeForm.id">
+                            <input type="hidden" name="_method" value="PATCH">
+                        </template>
 
                         <div class="grid grid-cols-2 gap-4">
 
@@ -232,7 +301,7 @@
                                 <label for="cheque_no" class="mb-1 text-gray-700 font-medium">
                                     Cheque No <span class="text-red-500">*</span>
                                 </label>
-                                <input type="text" name="cheque_no" id="cheque_no" required
+                                <input type="text" name="cheque_no" id="cheque_no" x-model="chequeForm.cheque_no" required
                                        class="p-3 border rounded-lg focus:ring-2 focus:ring-blue-400 focus:outline-none">
                             </div>
 
@@ -241,7 +310,7 @@
                                 <label for="cheque_date" class="mb-1 text-gray-700 font-medium">
                                     Cheque Date <span class="text-red-500">*</span>
                                 </label>
-                                <input type="date" name="cheque_date" id="cheque_date" required
+                                <input type="date" name="cheque_date" id="cheque_date" x-model="chequeForm.cheque_date" required
                                        class="p-3 border rounded-lg focus:ring-2 focus:ring-blue-400 focus:outline-none">
                             </div>
 
@@ -249,17 +318,16 @@
                             <div class="flex flex-col">
                                 <label for="cheque_exp_date" class="mb-1 text-gray-700 font-medium">Cheque Expiry
                                     Date</label>
-                                <input type="date" name="cheque_exp_date" id="cheque_exp_date"
+                                <input type="date" name="cheque_exp_date" id="cheque_exp_date" x-model="chequeForm.cheque_exp_date"
                                        class="p-3 border rounded-lg focus:ring-2 focus:ring-blue-400 focus:outline-none">
                             </div>
 
                             <!-- Cheque Deposit Type -->
-                            <div x-data="{ chequeType: '', cashPerson: '' }" class="flex flex-col">
-                                <!-- Cheque Deposit Type -->
-                                <label for="cheque_type" class="mb-1 text-gray-700 font-medium">
+                            <div class="flex flex-col">
+                                <label for="cheque_deposit_type" class="mb-1 text-gray-700 font-medium">
                                     Cheque Deposit Type <span class="text-red-500">*</span>
                                 </label>
-                                <select x-model="chequeType" name="cheque_type" id="cheque_type" required
+                                <select x-model="chequeForm.cheque_deposit_type" id="cheque_deposit_type" required
                                         class="p-3 border rounded-lg focus:ring-2 focus:ring-blue-400 focus:outline-none">
                                     <option value="" disabled selected>Select cheque type</option>
                                     <option value="cross">Cross</option>
@@ -267,19 +335,19 @@
                                 </select>
 
                                 <!-- Conditional input for Cash cheques -->
-                                <div x-show="chequeType === 'cash'" class="flex flex-col mt-2">
+                                <div x-show="chequeForm.cheque_deposit_type === 'cash'" class="flex flex-col mt-2">
                                     <label for="cash_person" class="mb-1 text-gray-700 font-medium">
                                         Person Name <span class="text-red-500">*</span>
                                     </label>
-                                    <input type="text" x-model="cashPerson" id="cash_person"
+                                    <input type="text" x-model="chequeForm.cash_person" id="cash_person"
                                            placeholder="Enter person name"
                                            class="p-3 border rounded-lg focus:ring-2 focus:ring-blue-400 focus:outline-none"
-                                           :required="chequeType === 'cash'">
+                                           :required="chequeForm.cheque_deposit_type === 'cash'">
                                 </div>
 
                                 <!-- Hidden input to combine values for backend -->
                                 <input type="hidden" name="cheque_type_combined"
-                                       :value="chequeType === 'cash' ? `Cash - ${cashPerson}` : chequeType">
+                                       :value="chequeForm.cheque_deposit_type === 'cash' ? `Cash - ${chequeForm.cash_person}` : chequeForm.cheque_deposit_type">
                             </div>
 
                             <!-- Bank Account Dropdown -->
@@ -287,7 +355,7 @@
                                 <label for="bank_account_id" class="mb-1 text-gray-700 font-medium">
                                     Company Bank Account <span class="text-red-500">*</span>
                                 </label>
-                                <select name="bank_account_id" id="bank_account_id" required
+                                <select name="bank_account_id" id="bank_account_id" x-model="chequeForm.bank_account_id" required
                                         class="p-3 border rounded-lg focus:ring-2 focus:ring-blue-400 focus:outline-none">
                                     <option value="" disabled selected>Select Bank Account</option>
                                     @foreach($bankAccounts as $account)
@@ -303,7 +371,7 @@
                                 <label for="cheque_amount" class="mb-1 text-gray-700 font-medium">
                                     Amount <span class="text-red-500">*</span>
                                 </label>
-                                <input type="number" step="0.01" name="cheque_amount" id="cheque_amount" required
+                                <input type="number" step="0.01" name="cheque_amount" id="cheque_amount" x-model="chequeForm.cheque_amount" required
                                        class="p-3 border rounded-lg focus:ring-2 focus:ring-blue-400 focus:outline-none">
                             </div>
 
@@ -312,7 +380,7 @@
                                 <label for="cheque_type" class="mb-1 text-gray-700 font-medium">
                                     Cheque Type <span class="text-red-500">*</span>
                                 </label>
-                                <select name="cheque_type" id="cheque_type" x-model="chequeType"
+                                <select name="cheque_type" id="cheque_type" x-model="chequeForm.cheque_type"
                                         class="p-3 border rounded-lg focus:ring-2 focus:ring-blue-400 focus:outline-none">
                                     <option value="issued">Issued</option>
                                     <option value="received">Received</option>
@@ -324,9 +392,9 @@
                                 <label for="status" class="mb-1 text-gray-700 font-medium">
                                     Status <span class="text-red-500">*</span>
                                 </label>
-                                <select name="status" id="status"
+                                <select name="status" id="status" x-model="chequeForm.status"
                                         class="p-3 border rounded-lg focus:ring-2 focus:ring-blue-400 focus:outline-none">
-                                    <template x-for="status in statuses[chequeType]" :key="status">
+                                    <template x-for="status in statuses[chequeForm.cheque_type]" :key="status">
                                         <option :value="status"
                                                 x-text="status.charAt(0).toUpperCase() + status.slice(1)"></option>
                                     </template>
@@ -336,7 +404,7 @@
                             <!-- Deposit Date -->
                             <div class="flex flex-col">
                                 <label for="deposit_date" class="mb-1 text-gray-700 font-medium">Deposit Date</label>
-                                <input type="date" name="deposit_date" id="deposit_date"
+                                <input type="date" name="deposit_date" id="deposit_date" x-model="chequeForm.deposit_date"
                                        class="p-3 border rounded-lg focus:ring-2 focus:ring-blue-400 focus:outline-none">
                             </div>
 
@@ -344,21 +412,21 @@
                             <div class="flex flex-col">
                                 <label for="realization_date" class="mb-1 text-gray-700 font-medium">Realization
                                     Date</label>
-                                <input type="date" name="realization_date" id="realization_date"
+                                <input type="date" name="realization_date" id="realization_date" x-model="chequeForm.realization_date"
                                        class="p-3 border rounded-lg focus:ring-2 focus:ring-blue-400 focus:outline-none">
                             </div>
 
                             <!-- Bounce Date -->
                             <div class="flex flex-col">
                                 <label for="bounce_date" class="mb-1 text-gray-700 font-medium">Bounce Date</label>
-                                <input type="date" name="bounce_date" id="bounce_date"
+                                <input type="date" name="bounce_date" id="bounce_date" x-model="chequeForm.bounce_date"
                                        class="p-3 border rounded-lg focus:ring-2 focus:ring-blue-400 focus:outline-none">
                             </div>
 
                             <!-- Bank Charges -->
                             <div class="flex flex-col">
                                 <label for="bank_charges" class="mb-1 text-gray-700 font-medium">Bank Charges</label>
-                                <input type="number" step="0.01" name="bank_charges" id="bank_charges" value="0"
+                                <input type="number" step="0.01" name="bank_charges" id="bank_charges" x-model="chequeForm.bank_charges"
                                        class="p-3 border rounded-lg focus:ring-2 focus:ring-blue-400 focus:outline-none">
                             </div>
 
@@ -366,21 +434,21 @@
                             <div class="flex flex-col">
                                 <label for="penalty_amount" class="mb-1 text-gray-700 font-medium">Penalty
                                     Amount</label>
-                                <input type="number" step="0.01" name="penalty_amount" id="penalty_amount" value="0"
+                                <input type="number" step="0.01" name="penalty_amount" id="penalty_amount" x-model="chequeForm.penalty_amount"
                                        class="p-3 border rounded-lg focus:ring-2 focus:ring-blue-400 focus:outline-none">
                             </div>
 
                             <!-- Reference No -->
                             <div class="flex flex-col">
                                 <label for="reference_no" class="mb-1 text-gray-700 font-medium">Reference No</label>
-                                <input type="text" name="reference_no" id="reference_no"
+                                <input type="text" name="reference_no" id="reference_no" x-model="chequeForm.reference_no"
                                        class="p-3 border rounded-lg focus:ring-2 focus:ring-blue-400 focus:outline-none">
                             </div>
 
                             <!-- Remarks -->
                             <div class="flex flex-col col-span-2">
                                 <label for="remarks" class="mb-1 text-gray-700 font-medium">Remarks</label>
-                                <textarea name="remarks" id="remarks" placeholder="Remarks"
+                                <textarea name="remarks" id="remarks" placeholder="Remarks" x-model="chequeForm.remarks"
                                           class="p-3 border rounded-lg focus:ring-2 focus:ring-blue-400 focus:outline-none"></textarea>
                             </div>
 
@@ -393,7 +461,7 @@
                             </button>
                             <button type="submit"
                                     class="px-6 py-2 bg-blue-600 text-white rounded-full font-semibold hover:bg-blue-700 transition">
-                                Save Cheque
+                                <span x-text="chequeForm.id ? 'Update Cheque' : 'Save Cheque'"></span>
                             </button>
                         </div>
                     </form>
@@ -619,6 +687,26 @@
 </div>
 
 @livewireScripts
+
+<script>
+    function confirmDelete(event, form) {
+        event.preventDefault();
+
+        Swal.fire({
+            title: 'Are you sure?',
+            text: "This action cannot be undone!",
+            icon: 'warning',
+            showCancelButton: true,
+            confirmButtonColor: '#dc2626',
+            cancelButtonColor: '#6b7280',
+            confirmButtonText: 'Yes, delete it!'
+        }).then((result) => {
+            if (result.isConfirmed) {
+                form.submit();
+            }
+        });
+    }
+</script>
 
 </body>
 </html>

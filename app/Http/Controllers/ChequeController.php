@@ -183,16 +183,119 @@ class ChequeController extends Controller
     /**
      * Update the specified resource in storage.
      */
-    public function update(Request $request, Cheque $cheque)
+    public function update(Request $request, Cheque $cheque): RedirectResponse
     {
-        //
+        // ✅ VALIDATION (similar to store but allow same cheque_no for this record)
+        $validator = Validator::make($request->all(), [
+            'cheque_no' => 'required|string|max:255|unique:cheques,cheque_no,' . $cheque->id,
+            'cheque_date' => 'required|date',
+            'cheque_exp_date' => 'nullable|date',
+            'bank_account_id' => 'required|exists:bank_accounts,id',
+            'cheque_amount' => 'required|numeric|min:0',
+            'cheque_type_combined' => 'required|string|max:255',
+            'cheque_type' => 'required|in:received,issued',
+            'status' => 'required|in:pending,deposited,cleared,bounced,cancelled',
+            'remarks' => 'nullable|string|max:1000',
+            'deposit_date' => 'nullable|date',
+            'realization_date' => 'nullable|date',
+            'bounce_date' => 'nullable|date',
+            'bank_charges' => 'nullable|numeric|min:0',
+            'penalty_amount' => 'nullable|numeric|min:0',
+            'reference_no' => 'nullable|string|max:255',
+        ]);
+
+        if ($validator->fails()) {
+            return redirect()->back()
+                ->withErrors($validator)
+                ->withInput();
+        }
+
+        try {
+            DB::beginTransaction();
+
+            // ✅ Fetch bank details
+            $bank = BankAccounts::findOrFail($request->bank_account_id);
+
+            // ✅ Prepare cheque data
+            $data = $request->only([
+                'cheque_no',
+                'cheque_date',
+                'cheque_exp_date',
+                'cheque_amount',
+                'cheque_type',
+                'status',
+                'remarks',
+                'deposit_date',
+                'realization_date',
+                'bounce_date',
+                'bank_charges',
+                'penalty_amount',
+                'reference_no',
+            ]);
+
+            // Set bank-related fields
+            $data['bank_account_id'] = $bank->id;
+            $data['bank_name'] = $bank->bank_name;
+            $data['company_name'] = $bank->company_name;
+            $data['branch_name'] = $bank->branch_name;
+
+            // Use combined cheque type for Cash cheques
+            $data['cheque_type_cross_cheque'] = $request->cheque_type_combined;
+
+            // ✅ Handle status-based dates if not manually entered
+            switch ($data['status']) {
+                case 'deposited':
+                    $data['deposit_date'] = $data['deposit_date'] ?? now();
+                    break;
+
+                case 'cleared':
+                    $data['deposit_date'] = $data['deposit_date'] ?? now();
+                    $data['realization_date'] = $data['realization_date'] ?? now();
+                    break;
+
+                case 'bounced':
+                    $data['bounce_date'] = $data['bounce_date'] ?? now();
+                    break;
+            }
+
+            // Default financial fields if not provided
+            $data['bank_charges'] = $data['bank_charges'] ?? 0;
+            $data['penalty_amount'] = $data['penalty_amount'] ?? 0;
+
+            // ✅ Update cheque record
+            $cheque->update($data);
+
+            DB::commit();
+
+            return redirect()->back()->with('success', 'Cheque updated successfully!');
+        } catch (Exception $e) {
+            DB::rollBack();
+            Log::error('Cheque update error: ' . $e->getMessage(), [
+                'trace' => $e->getTraceAsString(),
+                'request' => $request->all(),
+            ]);
+
+            return redirect()->back()
+                ->with('error', 'Update failed. Please try again.')
+                ->withInput();
+        }
     }
 
     /**
      * Remove the specified resource from storage.
      */
-    public function destroy(Cheque $cheque)
+    public function destroy(Cheque $cheque): RedirectResponse
     {
-        //
+        try {
+            $cheque->delete();
+            return redirect()->back()->with('success', 'Cheque deleted successfully!');
+        } catch (Exception $e) {
+            Log::error('Cheque delete error: ' . $e->getMessage(), [
+                'trace' => $e->getTraceAsString(),
+                'id' => $cheque->id,
+            ]);
+
+            return redirect()->back()->with('error', 'Failed to delete cheque.');
+        }
     }
 }
