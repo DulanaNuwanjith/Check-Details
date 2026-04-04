@@ -135,6 +135,10 @@
             </div>
         </div>
 
+        <div class="mt-6">
+            {{ $bankAccounts->links() }}
+        </div>
+
         <!-- MODAL -->
         <div x-show="openBankModal"
              x-cloak

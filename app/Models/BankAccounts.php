@@ -11,6 +11,7 @@ use App\Models\ActivityLog;
  * @method static create(array $array)
  * @method static count()
  * @method static where(string $string, int $int)
+ * @method static latest()
  */
 class BankAccounts extends Model
 {
