@@ -428,6 +428,10 @@
                             <span x-text="selectedCheque?.cheque_type === 'received' ? 'Received' : 'Issued'"></span>
                         </div>
                         <div class="flex justify-between py-1">
+                            <span class="font-medium">Deposit Type:</span>
+                            <span x-text="selectedCheque?.cheque_type_cross_cheque || '-'"></span>
+                        </div>
+                        <div class="flex justify-between py-1">
                             <span class="font-medium">Amount:</span>
                             <span x-text="parseFloat(selectedCheque?.cheque_amount).toFixed(2)"></span>
                         </div>
