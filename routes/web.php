@@ -17,12 +17,20 @@ Route::middleware([
     Route::get('/dashboard', [DashboardController::class, 'index'])->name('dashboard');
 
     //Cheque Management
-    Route::resource('cheques', ChequeController::class);
+    Route::middleware(['manager'])->group(function () {
+        Route::patch('cheques/{cheque}', [ChequeController::class, 'update'])->name('cheques.update');
+        Route::delete('cheques/{cheque}', [ChequeController::class, 'destroy'])->name('cheques.destroy');
+    });
+    Route::resource('cheques', ChequeController::class)->except(['update', 'destroy']);
 
     //Bank Accounts
-    Route::resource('bank-accounts', BankAccountsController::class);
-    Route::patch('bank-accounts/{id}/toggle-status', [BankAccountsController::class, 'toggleStatus'])
-        ->name('bank-accounts.toggle-status');
+    Route::middleware(['manager'])->group(function () {
+        Route::patch('bank-accounts/{bank_account}', [BankAccountsController::class, 'update'])->name('bank-accounts.update');
+        Route::delete('bank-accounts/{bank_account}', [BankAccountsController::class, 'destroy'])->name('bank-accounts.destroy');
+        Route::patch('bank-accounts/{id}/toggle-status', [BankAccountsController::class, 'toggleStatus'])
+            ->name('bank-accounts.toggle-status');
+    });
+    Route::resource('bank-accounts', BankAccountsController::class)->except(['update', 'destroy']);
 
     //User Management
     Route::middleware(['superadmin'])->group(function () {

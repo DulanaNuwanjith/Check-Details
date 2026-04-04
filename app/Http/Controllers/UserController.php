@@ -22,7 +22,7 @@ class UserController extends Controller
             'last_name' => ['required', 'string', 'max:255'],
             'email' => ['required', 'string', 'lowercase', 'email', 'max:255', 'unique:'.User::class],
             'nic' => ['required', 'string', 'max:20'],
-            'role' => ['required', 'string', 'in:superadmin,user'],
+            'role' => ['required', 'string', 'in:superadmin,employee,manager'],
             'password' => ['required', 'confirmed', Rules\Password::defaults()],
         ]);
 
@@ -45,7 +45,7 @@ class UserController extends Controller
             'last_name' => ['required', 'string', 'max:255'],
             'email' => ['required', 'string', 'lowercase', 'email', 'max:255', 'unique:users,email,'.$user->id],
             'nic' => ['required', 'string', 'max:20'],
-            'role' => ['required', 'string', 'in:superadmin,user'],
+            'role' => ['required', 'string', 'in:superadmin,employee,manager'],
             'password' => ['nullable', 'confirmed', Rules\Password::defaults()],
         ]);
 

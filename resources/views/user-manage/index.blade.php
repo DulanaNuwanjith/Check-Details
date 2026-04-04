@@ -128,8 +128,10 @@
                             <td class="px-6 py-4 text-center">
                                 @if($user->role === 'superadmin')
                                     <span class="px-3 py-1 bg-purple-100 text-purple-700 rounded-full text-xs font-bold">SuperAdmin</span>
+                                @elseif($user->role === 'manager')
+                                    <span class="px-3 py-1 bg-blue-100 text-blue-700 rounded-full text-xs font-bold">Manager</span>
                                 @else
-                                    <span class="px-3 py-1 bg-blue-100 text-blue-700 rounded-full text-xs font-bold">User</span>
+                                    <span class="px-3 py-1 bg-green-100 text-green-700 rounded-full text-xs font-bold">Employee</span>
                                 @endif
                             </td>
 
