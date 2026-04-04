@@ -2,15 +2,17 @@
 
 namespace App\Models;
 
+use Exception;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Support\Facades\Auth;
-use App\Models\ActivityLog;
 
 /**
  * @method static findOrFail(int $id)
  * @method static create(array $array)
  * @method static count()
  * @method static where(string $string, int $int)
+ * @method static latest()
  */
 class BankAccounts extends Model
 {
@@ -18,12 +20,7 @@ class BankAccounts extends Model
         'bank_name',
         'branch_name',
         'bank_code',
-        'account_name',
-        'account_number',
-        'account_type',
-        'currency',
-        'opening_balance',
-        'current_balance',
+        'company_name',
         'is_active',
         'remarks'
     ];
@@ -61,22 +58,22 @@ class BankAccounts extends Model
     {
         try {
             ActivityLog::create([
-                'module'      => 'bank_account',
-                'module_id'   => $bankAccount?->id,
-                'action'      => $action,
-                'user_id'     => Auth::id(),
+                'module' => 'bank_account',
+                'module_id' => $bankAccount?->id,
+                'action' => $action,
+                'user_id' => Auth::id(),
 
-                'old_values'  => $oldValues,
-                'new_values'  => $newValues,
+                'old_values' => $oldValues,
+                'new_values' => $newValues,
 
                 'description' => self::generateDescription($action, $bankAccount),
 
-                'ip_address'  => request()->ip(),
-                'user_agent'  => request()->userAgent(),
+                'ip_address' => request()->ip(),
+                'user_agent' => request()->userAgent(),
 
-                'status'      => $bankAccount?->is_active,
+                'status' => $bankAccount?->is_active,
             ]);
-        } catch (\Exception $e) {
+        } catch (Exception $e) {
             // Prevent breaking the app if logging fails
         }
     }
@@ -91,10 +88,15 @@ class BankAccounts extends Model
         }
 
         return match ($action) {
-            'created' => "Bank account {$bankAccount->account_name} ({$bankAccount->account_number}) created.",
-            'updated' => "Bank account {$bankAccount->account_name} ({$bankAccount->account_number}) updated.",
-            'deleted' => "Bank account {$bankAccount->account_name} ({$bankAccount->account_number}) deleted.",
-            default   => "Bank account {$bankAccount->account_name} ({$bankAccount->account_number}) {$action}.",
+            'created' => "Bank account {$bankAccount->bank_name} ({$bankAccount->company_name}) created.",
+            'updated' => "Bank account {$bankAccount->bank_name} ({$bankAccount->company_name}) updated.",
+            'deleted' => "Bank account {$bankAccount->bank_name} ({$bankAccount->company_name}) deleted.",
+            default => "Bank account {$bankAccount->bank_name} ({$bankAccount->company_name}) {$action}.",
         };
+    }
+
+    public function cheques(): HasMany
+    {
+        return $this->hasMany(Cheque::class, 'bank_account_id');
     }
 }

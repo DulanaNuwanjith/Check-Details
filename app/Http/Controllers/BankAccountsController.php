@@ -18,7 +18,7 @@ class BankAccountsController extends Controller
      */
     public function index()
     {
-        $bankAccounts = BankAccounts::all();
+        $bankAccounts = BankAccounts::latest()->paginate(10);
         return view('bank-account.index', compact('bankAccounts'));
     }
 
@@ -28,17 +28,12 @@ class BankAccountsController extends Controller
      */
     public function store(Request $request): ?RedirectResponse
     {
-        // Check if this is an update (hidden input "_method" = PATCH)
-        $isUpdate = $request->has('_method') && $request->_method === 'PATCH';
-        $id = $isUpdate ? $request->route('bank_account') : null; // make sure the route param name matches
-
         // Validation rules
         $rules = [
             'bank_name' => 'required|string|max:255',
             'branch_name' => 'nullable|string|max:255',
-            'account_name' => 'required|string|max:255',
-            'account_number' => 'required|string|max:50|unique:bank_accounts,account_number' . ($id ? ",$id" : ''),
-            'account_type' => 'required|in:current,savings,business',
+            'bank_code' => 'nullable|string|max:255',
+            'company_name' => 'required|string|max:255',
             'is_active' => 'required|boolean',
             'remarks' => 'nullable|string|max:1000',
         ];
@@ -54,28 +49,12 @@ class BankAccountsController extends Controller
         try {
             DB::beginTransaction();
 
-            if ($isUpdate && $id) {
-                // Update an existing account
-                $bankAccount = BankAccounts::findOrFail($id);
-                $bankAccount->update([
-                    'bank_name' => $request->bank_name,
-                    'branch_name' => $request->branch_name,
-                    'account_name' => $request->account_name,
-                    'account_number' => $request->account_number,
-                    'account_type' => $request->account_type,
-                    'is_active' => $request->is_active,
-                    'remarks' => $request->remarks,
-                ]);
-
-                $message = 'Bank account updated successfully.';
-            } else {
                 // Create a new account
                 $bankAccount = BankAccounts::create([
                     'bank_name' => $request->bank_name,
                     'branch_name' => $request->branch_name,
-                    'account_name' => $request->account_name,
-                    'account_number' => $request->account_number,
-                    'account_type' => $request->account_type,
+                    'bank_code' => $request->bank_code,
+                    'company_name' => $request->company_name,
                     'is_active' => $request->is_active,
                     'remarks' => $request->remarks,
                 ]);
@@ -85,13 +64,10 @@ class BankAccountsController extends Controller
                     BankAccounts::logActivity('created', null, $bankAccount->toArray(), $bankAccount);
                 }
 
-                $message = 'Bank account added successfully.';
-            }
-
             DB::commit();
 
             return redirect()->route('bank-accounts.index')
-                ->with('success', $message);
+                ->with('success', 'Bank Account created successfully.');
 
         } catch (Exception $e) {
             DB::rollBack();
@@ -102,6 +78,56 @@ class BankAccountsController extends Controller
 
             return redirect()->back()
                 ->with('error', 'An unexpected error occurred. Please try again.')
+                ->withInput();
+        }
+    }
+
+    /**
+     * @throws Throwable
+     */
+    public function update(Request $request, $id): RedirectResponse
+    {
+        $rules = [
+            'bank_name' => 'required|string|max:255',
+            'branch_name' => 'nullable|string|max:255',
+            'bank_code' => 'nullable|string|max:255',
+            'company_name' => 'required|string|max:255',
+            'is_active' => 'required|boolean',
+            'remarks' => 'nullable|string|max:1000',
+        ];
+
+        $validator = Validator::make($request->all(), $rules);
+
+        if ($validator->fails()) {
+            return redirect()->back()
+                ->withErrors($validator)
+                ->withInput();
+        }
+
+        try {
+            DB::beginTransaction();
+
+            $bankAccount = BankAccounts::findOrFail($id);
+
+            $bankAccount->update([
+                'bank_name' => $request->bank_name,
+                'branch_name' => $request->branch_name,
+                'bank_code' => $request->bank_code,
+                'company_name' => $request->company_name,
+                'is_active' => $request->is_active,
+                'remarks' => $request->remarks,
+            ]);
+
+            DB::commit();
+
+            return redirect()->route('bank-accounts.index')
+                ->with('success', 'Bank account updated successfully.');
+
+        } catch (Exception $e) {
+            DB::rollBack();
+
+            return redirect()->back()
+                ->with('error', 'Update failed.')
                 ->withInput();
         }
     }

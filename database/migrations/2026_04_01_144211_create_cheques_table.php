@@ -4,8 +4,7 @@ use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
 
-return new class extends Migration
-{
+return new class extends Migration {
     /**
      * Run the migrations.
      */
@@ -19,12 +18,13 @@ return new class extends Migration
             $table->date('cheque_date'); // Date written on check
             $table->date('cheque_exp_date')->nullable();
             $table->decimal('cheque_amount', 15, 2);
+            $table->string('cheque_type_cross_cheque')->nullable();
 
             // Bank details
             $table->unsignedBigInteger('bank_account_id')->nullable()->index(); // FK to bank_accounts
             $table->string('bank_name');
+            $table->string('company_name')->nullable();
             $table->string('branch_name')->nullable();
-            $table->string('account_no')->nullable();
 
             // Type & classification
             $table->enum('cheque_type', ['received', 'issued']); // inbound or outbound
@@ -58,6 +58,11 @@ return new class extends Migration
             // Extra info
             $table->text('remarks')->nullable();
             $table->string('reference_no')->nullable(); // internal ref
+
+            //Cheque Issued to Details
+            $table->string('cheque_issued_to')->nullable();
+            $table->date('cheque_issued_date')->nullable();
+            $table->string('cheque_issued_by')->nullable();
 
             // Softly delete audit safety
             $table->softDeletes();
