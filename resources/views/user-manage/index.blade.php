@@ -269,7 +269,8 @@
                             <select name="role"
                                     class="p-2 border rounded-lg focus:ring-2 focus:ring-green-500 focus:outline-none"
                                     x-model="userForm.role">
-                                <option value="user">User</option>
+                                <option value="employee">Employee</option>
+                                <option value="manager">Manager</option>
                                 <option value="superadmin">SuperAdmin</option>
                             </select>
                         </div>
