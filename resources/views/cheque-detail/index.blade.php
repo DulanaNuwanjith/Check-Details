@@ -404,111 +404,213 @@
 
         <!-- VIEW CHEQUE MODAL -->
         <div x-show="viewModal" x-transition.opacity x-cloak
-             class="fixed inset-0 bg-black/50 flex items-center justify-center z-50">
+             class="fixed inset-0 bg-slate-900/60 backdrop-blur-sm flex items-center justify-center z-50 p-4">
 
             <div @click.away="viewModal = false"
-                 class="bg-white rounded-2xl w-full max-w-3xl p-6 shadow-2xl overflow-auto max-h-[90vh]">
+                 class="bg-white rounded-[2.5rem] w-full max-w-4xl shadow-2xl overflow-hidden flex flex-col max-h-[95vh] border border-white/20">
 
-                <div class="flex justify-between items-center mb-6 border-b pb-3">
-                    <h3 class="text-2xl font-bold text-gray-800">Cheque Details</h3>
-                    <button @click="viewModal = false" class="text-gray-400 hover:text-gray-600 text-2xl">✕</button>
-                </div>
-
-                <div class="grid grid-cols-1 md:grid-cols-2 gap-6 text-gray-700">
-
-                    <!-- Cheque Core Info -->
-                    <div class="p-4 bg-gray-50 rounded-lg shadow-sm">
-                        <h4 class="font-semibold text-gray-600 mb-2">Cheque Info</h4>
-                        <div class="flex justify-between py-1">
-                            <span class="font-medium">Cheque No:</span>
-                            <span x-text="selectedCheque?.cheque_no"></span>
+                <!-- Header -->
+                <div class="px-8 py-6 bg-slate-50/50 border-b border-slate-100 flex justify-between items-center">
+                    <div class="flex items-center gap-4">
+                        <div class="w-12 h-12 rounded-2xl bg-blue-600 flex items-center justify-center text-white shadow-lg shadow-blue-200">
+                            <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
+                            </svg>
                         </div>
-                        <div class="flex justify-between py-1">
-                            <span class="font-medium">Type:</span>
-                            <span x-text="selectedCheque?.cheque_type === 'received' ? 'Received' : 'Issued'"></span>
-                        </div>
-                        <div class="flex justify-between py-1">
-                            <span class="font-medium">Deposit Type:</span>
-                            <span x-text="selectedCheque?.cheque_type_cross_cheque || '-'"></span>
-                        </div>
-                        <div class="flex justify-between py-1">
-                            <span class="font-medium">Amount:</span>
-                            <span x-text="parseFloat(selectedCheque?.cheque_amount).toFixed(2)"></span>
-                        </div>
-                        <div class="flex justify-between py-1">
-                            <span class="font-medium">Cheque Date:</span>
-                            <span x-text="new Date(selectedCheque?.cheque_date).toLocaleDateString()"></span>
-                        </div>
-                        <div class="flex justify-between py-1">
-                            <span class="font-medium">Expiry Date:</span>
-                            <span x-text="selectedCheque?.cheque_exp_date ? new Date(selectedCheque.cheque_exp_date).toLocaleDateString() : '-'"></span>
-                        </div>
-                        <div class="flex justify-between py-1">
-                            <span class="font-medium">Status:</span>
-                            <span x-text="selectedCheque?.status.charAt(0).toUpperCase() + selectedCheque?.status.slice(1)"></span>
+                        <div>
+                            <h3 class="text-2xl font-black text-slate-800 tracking-tight">Cheque #<span x-text="selectedCheque?.cheque_no"></span></h3>
+                            <p class="text-slate-400 text-xs font-bold uppercase tracking-widest mt-1">Detailed View & Operations</p>
                         </div>
                     </div>
-
-                    <!-- Bank Info -->
-                    <div class="p-4 bg-gray-50 rounded-lg shadow-sm">
-                        <h4 class="font-semibold text-gray-600 mb-2">Bank Info</h4>
-                        <div class="flex justify-between py-1">
-                            <span class="font-medium">Bank Name:</span>
-                            <span x-text="selectedCheque?.bank_name"></span>
-                        </div>
-                        <div class="flex justify-between py-1">
-                            <span class="font-medium">Company:</span>
-                            <span x-text="selectedCheque?.company_name || '-'"></span>
-                        </div>
-                        <div class="flex justify-between py-1">
-                            <span class="font-medium">Branch:</span>
-                            <span x-text="selectedCheque?.branch_name || '-'"></span>
-                        </div>
-                        <div class="flex justify-between py-1">
-                            <span class="font-medium">Account No:</span>
-                            <span x-text="selectedCheque?.account_no || '-'"></span>
-                        </div>
-                        <div class="flex justify-between py-1">
-                            <span class="font-medium">Bank Charges:</span>
-                            <span x-text="parseFloat(selectedCheque?.bank_charges).toFixed(2)"></span>
-                        </div>
-                        <div class="flex justify-between py-1">
-                            <span class="font-medium">Penalty:</span>
-                            <span x-text="parseFloat(selectedCheque?.penalty_amount).toFixed(2)"></span>
-                        </div>
-                    </div>
-
-                    <!-- Dates -->
-                    <div class="p-4 bg-gray-50 rounded-lg shadow-sm col-span-2">
-                        <h4 class="font-semibold text-gray-600 mb-2">Important Dates</h4>
-                        <div class="grid grid-cols-2 gap-4">
-                            <div>
-                                <span class="font-medium">Deposit Date:</span>
-                                <span x-text="selectedCheque?.deposit_date ? new Date(selectedCheque.deposit_date).toLocaleDateString() : '-'"></span>
-                            </div>
-                            <div>
-                                <span class="font-medium">Realization Date:</span>
-                                <span x-text="selectedCheque?.realization_date ? new Date(selectedCheque.realization_date).toLocaleDateString() : '-'"></span>
-                            </div>
-                            <div>
-                                <span class="font-medium">Bounce Date:</span>
-                                <span x-text="selectedCheque?.bounce_date ? new Date(selectedCheque.bounce_date).toLocaleDateString() : '-'"></span>
-                            </div>
-                        </div>
-                    </div>
-
-                    <!-- Remarks -->
-                    <div class="p-4 bg-gray-50 rounded-lg shadow-sm col-span-2">
-                        <h4 class="font-semibold text-gray-600 mb-2">Remarks</h4>
-                        <p x-text="selectedCheque?.remarks || '-'"></p>
+                    <div class="flex items-center gap-4">
+                        <template x-if="selectedCheque?.status === 'cleared'">
+                            <span class="px-4 py-1.5 bg-emerald-100 text-emerald-700 rounded-full text-xs font-black uppercase tracking-widest ring-4 ring-emerald-50">Cleared</span>
+                        </template>
+                        <template x-if="selectedCheque?.status === 'pending'">
+                            <span class="px-4 py-1.5 bg-amber-100 text-amber-700 rounded-full text-xs font-black uppercase tracking-widest ring-4 ring-amber-50">Pending</span>
+                        </template>
+                        <template x-if="selectedCheque?.status === 'bounced'">
+                            <span class="px-4 py-1.5 bg-rose-100 text-rose-700 rounded-full text-xs font-black uppercase tracking-widest ring-4 ring-rose-50">Bounced</span>
+                        </template>
+                        <button @click="viewModal = false" class="w-10 h-10 rounded-xl bg-slate-100 text-slate-400 hover:bg-rose-50 hover:text-rose-500 transition-all flex items-center justify-center text-xl font-bold">✕</button>
                     </div>
                 </div>
 
-                <div class="flex justify-end mt-6">
+                <!-- Scrollable Body -->
+                <div class="flex-1 overflow-y-auto p-10 space-y-10 custom-scrollbar">
+                    
+                    <!-- Hero Section (Amount & Type) -->
+                    <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
+                        <div class="md:col-span-2 p-8 rounded-[2rem] bg-gradient-to-br from-slate-900 to-slate-800 text-white relative overflow-hidden shadow-xl shadow-slate-200">
+                             <div class="absolute -right-10 -bottom-10 w-40 h-40 bg-white/5 rounded-full blur-3xl"></div>
+                             <div class="absolute -left-10 -top-10 w-40 h-40 bg-blue-500/10 rounded-full blur-3xl"></div>
+                             
+                             <h4 class="text-slate-400 text-xs font-black uppercase tracking-widest mb-2">Total Cheque Amount</h4>
+                             <p class="text-5xl font-black tracking-tighter mb-4">LKR <span x-text="parseFloat(selectedCheque?.cheque_amount).toLocaleString(undefined, {minimumFractionDigits: 2})"></span></p>
+                             
+                             <div class="flex items-center gap-3">
+                                <template x-if="selectedCheque?.cheque_type === 'received'">
+                                    <div class="flex items-center gap-2 px-4 py-2 bg-emerald-500/20 text-emerald-400 rounded-2xl border border-emerald-500/20 backdrop-blur-sm">
+                                        <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" viewBox="0 0 20 20" fill="currentColor">
+                                            <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-8.707l-3-3a1 1 0 00-1.414 0l-3 3a1 1 0 001.414 1.414L9 9.414V13a1 1 0 102 0V9.414l1.293 1.293a1 1 0 001.414-1.414z" clip-rule="evenodd" />
+                                        </svg>
+                                        <span class="font-black text-xs uppercase tracking-widest">Received Cheque (IN)</span>
+                                    </div>
+                                </template>
+                                <template x-if="selectedCheque?.cheque_type !== 'received'">
+                                    <div class="flex items-center gap-2 px-4 py-2 bg-rose-500/20 text-rose-400 rounded-2xl border border-rose-500/20 backdrop-blur-sm">
+                                        <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" viewBox="0 0 20 20" fill="currentColor">
+                                            <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm1-11a1 1 0 10-2 0v3.586L7.707 9.293a1 1 0 00-1.414 1.414l3 3a1 1 0 001.414 1.414L9 9.414V13a1 1 0 102 0V9.414l1.293 1.293a1 1 0 001.414-1.414z" clip-rule="evenodd" />
+                                        </svg>
+                                        <span class="font-black text-xs uppercase tracking-widest">Issued Cheque (OUT)</span>
+                                    </div>
+                                </template>
+                                <div class="px-4 py-2 bg-white/5 text-slate-300 rounded-2xl border border-white/5 font-black text-xs uppercase tracking-widest">
+                                    <span x-text="selectedCheque?.cheque_type_cross_cheque || 'Regular'"></span>
+                                </div>
+                             </div>
+                        </div>
+                        
+                        <div class="p-8 rounded-[2rem] bg-slate-50 border border-slate-100 flex flex-col justify-center text-center group hover:bg-white hover:shadow-xl hover:shadow-blue-500/5 transition duration-300">
+                            <h4 class="text-slate-400 text-[10px] font-black uppercase tracking-widest mb-4 leading-none">Days Until Expiry</h4>
+                            <template x-if="selectedCheque?.cheque_exp_date">
+                                <div>
+                                    <p class="text-5xl font-black text-slate-800 tracking-tighter mb-1" x-text="Math.max(0, Math.ceil((new Date(selectedCheque.cheque_exp_date) - new Date()) / (1000 * 60 * 60 * 24)))"></p>
+                                    <p class="text-slate-500 font-bold uppercase text-[10px] tracking-[0.2em]">Days Remaining</p>
+                                </div>
+                            </template>
+                            <template x-if="!selectedCheque?.cheque_exp_date">
+                                <p class="text-slate-300 font-black italic">No Expiry Set</p>
+                            </template>
+                        </div>
+                    </div>
+
+                    <!-- Detailed Info Grid -->
+                    <div class="grid grid-cols-1 lg:grid-cols-2 gap-10">
+                        
+                        <!-- Bank Info Column -->
+                        <div class="space-y-8">
+                            <div>
+                                <h5 class="text-slate-800 font-black text-sm uppercase tracking-widest mb-6 flex items-center gap-2">
+                                    <span class="w-2 h-2 rounded-full bg-blue-600 ring-4 ring-blue-100"></span>
+                                    Bank Profile Details
+                                </h5>
+                                <div class="p-8 rounded-[2rem] bg-white border border-slate-100 shadow-sm space-y-6">
+                                    <div class="flex justify-between items-center group">
+                                        <span class="text-slate-400 font-bold text-sm uppercase tracking-wider">Bank Name</span>
+                                        <span class="text-slate-800 font-black flex items-center gap-2 group-hover:text-blue-600 transition" x-text="selectedCheque?.bank_name"></span>
+                                    </div>
+                                    <div class="w-full h-px bg-slate-50"></div>
+                                    <div class="flex justify-between items-center group">
+                                        <span class="text-slate-400 font-bold text-sm uppercase tracking-wider">Branch</span>
+                                        <span class="text-slate-800 font-black group-hover:text-blue-600 transition" x-text="selectedCheque?.branch_name || 'Main Branch'"></span>
+                                    </div>
+                                    <div class="w-full h-px bg-slate-50"></div>
+                                    <div class="flex justify-between items-center group">
+                                        <span class="text-slate-400 font-bold text-sm uppercase tracking-wider">Associated Company</span>
+                                        <span class="text-slate-800 font-black group-hover:text-blue-600 transition" x-text="selectedCheque?.company_name || 'N/A'"></span>
+                                    </div>
+                                </div>
+                            </div>
+                            
+                            <!-- Financial Adjustments -->
+                            <div>
+                                <h5 class="text-slate-800 font-black text-sm uppercase tracking-widest mb-6 flex items-center gap-2">
+                                    <span class="w-2 h-2 rounded-full bg-rose-500 ring-4 ring-rose-100"></span>
+                                    Financial Operations
+                                </h5>
+                                <div class="grid grid-cols-2 gap-6">
+                                    <div class="p-6 rounded-[2rem] bg-slate-50 border border-slate-100 group hover:bg-white hover:shadow-xl hover:shadow-blue-500/5 transition duration-300">
+                                        <p class="text-slate-400 text-[10px] font-black uppercase tracking-widest mb-3 leading-none">Bank Charges</p>
+                                        <p class="text-2xl font-black text-slate-800 tracking-tight">LKR <span x-text="parseFloat(selectedCheque?.bank_charges || 0).toFixed(2)"></span></p>
+                                    </div>
+                                    <div class="p-6 rounded-[2rem] bg-slate-50 border border-slate-100 group hover:bg-white hover:shadow-xl hover:shadow-rose-500/5 transition duration-300">
+                                        <p class="text-slate-400 text-[10px] font-black uppercase tracking-widest mb-3 leading-none">Penalty Fees</p>
+                                        <p class="text-2xl font-black text-rose-600 tracking-tight">LKR <span x-text="parseFloat(selectedCheque?.penalty_amount || 0).toFixed(2)"></span></p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Dates and Timeline -->
+                        <div class="space-y-8">
+                             <div>
+                                <h5 class="text-slate-800 font-black text-sm uppercase tracking-widest mb-6 flex items-center gap-2">
+                                    <span class="w-2 h-2 rounded-full bg-emerald-500 ring-4 ring-emerald-100"></span>
+                                    Processing Timeline
+                                </h5>
+                                <div class="p-8 rounded-[2rem] bg-white border border-slate-100 shadow-sm">
+                                    <div class="space-y-8 relative after:content-[''] after:absolute after:left-[23px] after:top-[40px] after:bottom-[40px] after:w-0.5 after:bg-slate-100 after:rounded-full">
+                                        <!-- Issue Date -->
+                                        <div class="flex items-start gap-6 relative z-10">
+                                            <div class="w-12 h-12 rounded-2xl bg-blue-50 text-blue-600 flex items-center justify-center font-black shadow-sm ring-4 ring-white">
+                                                <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z" /></svg>
+                                            </div>
+                                            <div class="flex-1 -mt-1">
+                                                <p class="text-slate-400 text-[10px] font-black uppercase tracking-widest leading-none mb-1">Issue/Transaction Date</p>
+                                                <p class="text-slate-800 font-black text-xl tracking-tight" x-text="selectedCheque?.cheque_date ? new Date(selectedCheque.cheque_date).toLocaleDateString() : 'N/A'"></p>
+                                                <p class="text-slate-400 text-xs font-semibold mt-1">Official date written on the cheque</p>
+                                            </div>
+                                        </div>
+                                        
+                                        <!-- Deposit Date -->
+                                        <div class="flex items-start gap-6 relative z-10">
+                                            <div class="w-12 h-12 rounded-2xl flex items-center justify-center font-black shadow-sm ring-4 ring-white" :class="selectedCheque?.deposit_date ? 'bg-amber-50 text-amber-600' : 'bg-slate-50 text-slate-300'">
+                                                <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 14l-7 7m0 0l-7-7m7 7V3" /></svg>
+                                            </div>
+                                            <div class="flex-1 -mt-1">
+                                                <p class="text-slate-400 text-[10px] font-black uppercase tracking-widest leading-none mb-1">Bank Deposit Date</p>
+                                                <p class="text-slate-800 font-black text-xl tracking-tight" x-text="selectedCheque?.deposit_date ? new Date(selectedCheque.deposit_date).toLocaleDateString() : '---'"></p>
+                                                <p class="text-slate-400 text-xs font-semibold mt-1" x-text="selectedCheque?.deposit_date ? 'Successfully deposited to the bank' : 'Awaiting deposit to bank'"></p>
+                                            </div>
+                                        </div>
+
+                                        <!-- Final Status Date -->
+                                        <div class="flex items-start gap-6 relative z-10">
+                                            <div class="w-12 h-12 rounded-2xl flex items-center justify-center font-black shadow-sm ring-4 ring-white" 
+                                                 :class="selectedCheque?.status === 'cleared' ? 'bg-emerald-50 text-emerald-600' : (selectedCheque?.status === 'bounced' ? 'bg-rose-50 text-rose-600' : 'bg-slate-50 text-slate-300')">
+                                                <template x-if="selectedCheque?.status === 'cleared'">
+                                                    <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7" /></svg>
+                                                </template>
+                                                <template x-if="selectedCheque?.status === 'bounced'">
+                                                    <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" /></svg>
+                                                </template>
+                                                <template x-if="selectedCheque?.status !== 'cleared' && selectedCheque?.status !== 'bounced'">
+                                                    <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" /></svg>
+                                                </template>
+                                            </div>
+                                            <div class="flex-1 -mt-1">
+                                                <p class="text-slate-400 text-[10px] font-black uppercase tracking-widest leading-none mb-1">Final Realization Date</p>
+                                                <p class="text-slate-800 font-black text-xl tracking-tight" x-text="selectedCheque?.realization_date ? new Date(selectedCheque.realization_date).toLocaleDateString() : (selectedCheque?.bounce_date ? new Date(selectedCheque.bounce_date).toLocaleDateString() : '---')"></p>
+                                                <p class="text-slate-400 text-xs font-semibold mt-1" x-text="selectedCheque?.status === 'cleared' ? 'Funds fully cleared and realized' : (selectedCheque?.status === 'bounced' ? 'Cheque was returned/bounced' : 'Processing for realization')"></p>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                             </div>
+                        </div>
+                    </div>
+
+                    <!-- Remarks Section -->
+                    <div class="px-8 py-6 bg-slate-50 rounded-[2rem] border border-slate-100 flex items-start gap-6 group hover:bg-white hover:shadow-xl hover:shadow-blue-500/5 transition duration-300">
+                        <div class="w-12 h-12 rounded-xl bg-slate-200/50 flex items-center justify-center text-slate-500 group-hover:bg-blue-600 group-hover:text-white transition duration-300">
+                            <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 8h10M7 12h4m1 8l-4-4H5a2 2 0 01-2-2V6a2 2 0 012-2h14a2 2 0 012 2v8a2 2 0 01-2 2h-3l-4 4z" /></svg>
+                        </div>
+                        <div class="flex-1 mt-1">
+                            <h5 class="text-slate-400 text-[10px] font-black uppercase tracking-widest leading-none mb-2">Additional Remarks / Notes</h5>
+                            <p class="text-slate-800 font-bold leading-relaxed" x-text="selectedCheque?.remarks || 'No additional remarks provided for this cheque entry.'"></p>
+                        </div>
+                    </div>
+
+                </div>
+
+                <!-- Footer / Actions -->
+                <div class="px-10 py-6 bg-slate-50/50 border-t border-slate-100 flex justify-end items-center gap-4">
                     <button @click="viewModal = false"
-                            class="px-6 py-2 bg-gray-200 text-gray-700 rounded-full font-semibold hover:bg-gray-300 transition">
-                        Close
+                            class="px-8 py-3 bg-white text-slate-700 rounded-2xl font-black uppercase text-xs tracking-widest border border-slate-200 hover:bg-slate-50 transition active:scale-95">
+                        Close Detailed View
                     </button>
+                    <!-- Potential extra actions could go here, like Print -->
                 </div>
             </div>
         </div>
