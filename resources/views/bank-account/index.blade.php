@@ -21,6 +21,19 @@
     </style>
 </head>
 
+@if(session('success'))
+    <script>
+        document.addEventListener('DOMContentLoaded', function () {
+            Swal.fire({
+                icon: 'success',
+                title: 'Success',
+                text: "{{ session('success') }}",
+                confirmButtonColor: '#16a34a'
+            });
+        });
+    </script>
+@endif
+
 <body class="text-gray-900 bg-gray-50 flex h-screen overflow-hidden antialiased">
 
 <x-sidebar />
@@ -87,10 +100,13 @@
                                 </button>
 
                                 <!-- DELETE -->
-                                <form method="POST" action="{{ route('bank-accounts.destroy', $account->id) }}">
+                                <form method="POST" action="{{ route('bank-accounts.destroy', $account->id) }}"
+                                      onsubmit="confirmDelete(event, this)">
                                     @csrf
                                     @method('DELETE')
-                                    <button class="bg-red-500 text-white px-3 py-1 rounded-full text-sm hover:bg-red-600">
+
+                                    <button type="submit"
+                                            class="bg-red-500 text-white px-3 py-1 rounded-full text-sm hover:bg-red-600">
                                         Delete
                                     </button>
                                 </form>
@@ -198,5 +214,25 @@
 </div>
 
 @livewireScripts
+
+<script>
+    function confirmDelete(event, form) {
+        event.preventDefault();
+
+        Swal.fire({
+            title: 'Are you sure?',
+            text: "This action cannot be undone!",
+            icon: 'warning',
+            showCancelButton: true,
+            confirmButtonColor: '#dc2626',
+            cancelButtonColor: '#6b7280',
+            confirmButtonText: 'Yes, delete it!'
+        }).then((result) => {
+            if (result.isConfirmed) {
+                form.submit();
+            }
+        });
+    }
+</script>
 </body>
 </html>
