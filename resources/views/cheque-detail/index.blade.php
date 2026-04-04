@@ -210,6 +210,7 @@
                                         View
                                     </button>
 
+                                @if(auth()->user()->role === 'manager' || auth()->user()->role === 'superadmin')
                                     <!-- Edit Button -->
                                     <button
                                         @click="
@@ -255,6 +256,7 @@
                                             Delete
                                         </button>
                                     </form>
+                                @endif
                                 </div>
                             </td>
                         </tr>

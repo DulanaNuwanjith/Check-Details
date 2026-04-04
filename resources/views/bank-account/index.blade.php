@@ -137,45 +137,49 @@
                             <!-- ACTIONS -->
                             <td class="px-6 py-4 flex justify-center gap-2">
 
-                                <!-- EDIT -->
-                                <button
-                                    @click="
-                                                bankForm = {
-                                                    id: {{ $account->id }},
-                                                    bank_name: '{{ addslashes($account->bank_name) }}',
-                                                    branch_name: '{{ addslashes($account->branch_name) }}',
-                                                    bank_code: '{{ addslashes($account->bank_code) }}',
-                                                    company_name: '{{ addslashes($account->company_name) }}',
-                                                    is_active: {{ $account->is_active ? 1 : 0 }},
-                                                    remarks: '{{ addslashes($account->remarks) }}'
-                                                };
-                                                openBankModal = true;
-                                            "
-                                    class="bg-blue-500 text-white px-3 py-1 rounded-full text-sm hover:bg-blue-600">
-                                    Edit
-                                </button>
-
-                                <!-- DELETE -->
-                                <form method="POST" action="{{ route('bank-accounts.destroy', $account->id) }}"
-                                      onsubmit="confirmDelete(event, this)">
-                                    @csrf
-                                    @method('DELETE')
-
-                                    <button type="submit"
-                                            class="bg-red-500 text-white px-3 py-1 rounded-full text-sm hover:bg-red-600">
-                                        Delete
+                                @if(auth()->user()->role === 'manager' || auth()->user()->role === 'superadmin')
+                                    <!-- EDIT -->
+                                    <button
+                                        @click="
+                                                    bankForm = {
+                                                        id: {{ $account->id }},
+                                                        bank_name: '{{ addslashes($account->bank_name) }}',
+                                                        branch_name: '{{ addslashes($account->branch_name) }}',
+                                                        bank_code: '{{ addslashes($account->bank_code) }}',
+                                                        company_name: '{{ addslashes($account->company_name) }}',
+                                                        is_active: {{ $account->is_active ? 1 : 0 }},
+                                                        remarks: '{{ addslashes($account->remarks) }}'
+                                                    };
+                                                    openBankModal = true;
+                                                "
+                                        class="bg-blue-500 text-white px-3 py-1 rounded-full text-sm hover:bg-blue-600">
+                                        Edit
                                     </button>
-                                </form>
 
-                                <!-- TOGGLE -->
-                                <form method="POST" action="{{ route('bank-accounts.toggle-status', $account->id) }}">
-                                    @csrf
-                                    @method('PATCH')
-                                    <button class="text-white px-3 py-1 rounded-full text-sm
-                                        {{ $account->is_active ? 'bg-yellow-500' : 'bg-green-500' }}">
-                                        {{ $account->is_active ? 'Deactivate' : 'Activate' }}
-                                    </button>
-                                </form>
+                                    <!-- DELETE -->
+                                    <form method="POST" action="{{ route('bank-accounts.destroy', $account->id) }}"
+                                          onsubmit="confirmDelete(event, this)">
+                                        @csrf
+                                        @method('DELETE')
+
+                                        <button type="submit"
+                                                class="bg-red-500 text-white px-3 py-1 rounded-full text-sm hover:bg-red-600">
+                                            Delete
+                                        </button>
+                                    </form>
+
+                                    <!-- TOGGLE -->
+                                    <form method="POST" action="{{ route('bank-accounts.toggle-status', $account->id) }}">
+                                        @csrf
+                                        @method('PATCH')
+                                        <button class="text-white px-3 py-1 rounded-full text-sm
+                                            {{ $account->is_active ? 'bg-yellow-500' : 'bg-green-500' }}">
+                                            {{ $account->is_active ? 'Deactivate' : 'Activate' }}
+                                        </button>
+                                    </form>
+                                @else
+                                    <span class="text-gray-400 italic text-sm">View Only</span>
+                                @endif
 
                             </td>
                         </tr>
