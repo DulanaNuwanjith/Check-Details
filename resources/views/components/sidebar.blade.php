@@ -112,14 +112,16 @@
         <p x-cloak x-show="!collapsed" class="sidebar-label px-4 text-[10px] font-black uppercase tracking-[0.3em] text-slate-300 mb-4">Operations</p>
 
         <!-- User Management -->
-        <a href="#"
-           class="sidebar-item flex items-center px-4 py-3.5 rounded-2xl font-bold group text-slate-500 hover:bg-slate-50 hover:text-blue-600"
-           :title="collapsed ? 'Users' : ''">
-            <div class="w-8 flex justify-center items-center">
-                <i class="fa-solid fa-users-gear text-lg transition-transform group-hover:scale-110"></i>
-            </div>
-            <span x-cloak x-show="!collapsed" class="sidebar-label ml-3 tracking-tight whitespace-nowrap">User Access Control</span>
-        </a>
+        @if(auth()->check() && auth()->user()->role === 'superadmin')
+            <a href="{{ route('users.index') }}"
+               class="sidebar-item flex items-center px-4 py-3.5 rounded-2xl font-bold group {{ request()->routeIs('users.*') ? 'sidebar-active' : 'text-slate-500 hover:bg-slate-50 hover:text-blue-600' }}"
+               :title="collapsed ? 'Users' : ''">
+                <div class="w-8 flex justify-center items-center">
+                    <i class="fa-solid fa-users-gear text-lg transition-transform group-hover:scale-110"></i>
+                </div>
+                <span x-cloak x-show="!collapsed" class="sidebar-label ml-3 tracking-tight whitespace-nowrap">User Access Control</span>
+            </a>
+        @endif
 
         <!-- Reports -->
         <a href="#"

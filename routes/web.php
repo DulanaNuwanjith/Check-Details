@@ -22,4 +22,10 @@ Route::middleware([
     //Bank Accounts
     Route::resource('bank-accounts', BankAccountsController::class);
     Route::patch('bank-accounts/{id}/toggle-status', [BankAccountsController::class, 'toggleStatus'])
-        ->name('bank-accounts.toggle-status');});
+        ->name('bank-accounts.toggle-status');
+
+    //User Management
+    Route::middleware(['superadmin'])->group(function () {
+        Route::resource('users', \App\Http\Controllers\UserController::class);
+    });
+});
