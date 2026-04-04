@@ -15,8 +15,6 @@ use Illuminate\Support\Facades\Auth;
  */
 class Cheque extends Model
 {
-    use HasFactory;
-
     protected $fillable = [
         'cheque_no',
         'cheque_date',

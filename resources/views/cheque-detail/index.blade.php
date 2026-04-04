@@ -181,35 +181,6 @@
                                                         this.openStatus = !this.openStatus;
                                                     }
                                                 }" class="relative inline-block">
-
-                                        <!-- Change Status Button -->
-                                        <button @click="toggleDropdown($event)"
-                                                class="px-3 py-1 bg-green-100 text-green-700 rounded-full text-xs font-bold hover:bg-green-200 transition">
-                                            Change Status
-                                        </button>
-
-                                        <!-- Dropdown -->
-                                        <div x-show="openStatus"
-                                             @click.away="openStatus = false"
-                                             x-transition
-                                             style="position: fixed; top: 0; left: 0; z-index: 9999;"
-                                             :style="`top: ${dropdownTop}px; left: ${dropdownLeft}px;`"
-                                             class="w-36 bg-white border border-gray-200 rounded-lg shadow-lg">
-
-                                            <template
-                                                x-for="status in {{ $cheque->cheque_type === 'received' ? json_encode(['pending','deposited','cleared','bounced']) : json_encode(['pending','issued','cleared','cancelled']) }}"
-                                                :key="status">
-                                                <form :action="`/cheques/{{ $cheque->id }}/status`" method="POST">
-                                                    @csrf
-                                                    @method('PATCH')
-                                                    <input type="hidden" name="status" :value="status">
-                                                    <button type="submit"
-                                                            class="w-full text-left px-4 py-2 hover:bg-green-100 transition text-sm font-medium"
-                                                            x-text="status.charAt(0).toUpperCase() + status.slice(1)">
-                                                    </button>
-                                                </form>
-                                            </template>
-                                        </div>
                                     </div>
                                 </div>
                             </td>
