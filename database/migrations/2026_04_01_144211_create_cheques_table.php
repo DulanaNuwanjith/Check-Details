@@ -18,6 +18,7 @@ return new class extends Migration {
             $table->date('cheque_date'); // Date written on check
             $table->date('cheque_exp_date')->nullable();
             $table->decimal('cheque_amount', 15, 2);
+            $table->string('cheque_type_cross_cheque')->nullable();
 
             // Bank details
             $table->unsignedBigInteger('bank_account_id')->nullable()->index(); // FK to bank_accounts
