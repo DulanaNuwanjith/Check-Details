@@ -36,9 +36,8 @@ class BankAccountsController extends Controller
         $rules = [
             'bank_name' => 'required|string|max:255',
             'branch_name' => 'nullable|string|max:255',
-            'account_name' => 'required|string|max:255',
-            'account_number' => 'required|string|max:50|unique:bank_accounts,account_number' . ($id ? ",$id" : ''),
-            'account_type' => 'required|in:current,savings,business',
+            'bank_code' => 'required|string|max:255',
+            'company_name' => 'required|string|max:255',
             'is_active' => 'required|boolean',
             'remarks' => 'nullable|string|max:1000',
         ];
@@ -60,9 +59,8 @@ class BankAccountsController extends Controller
                 $bankAccount->update([
                     'bank_name' => $request->bank_name,
                     'branch_name' => $request->branch_name,
-                    'account_name' => $request->account_name,
-                    'account_number' => $request->account_number,
-                    'account_type' => $request->account_type,
+                    'bank_code' => $request->bank_code,
+                    'company_name' => $request->company_name,
                     'is_active' => $request->is_active,
                     'remarks' => $request->remarks,
                 ]);
@@ -73,9 +71,8 @@ class BankAccountsController extends Controller
                 $bankAccount = BankAccounts::create([
                     'bank_name' => $request->bank_name,
                     'branch_name' => $request->branch_name,
-                    'account_name' => $request->account_name,
-                    'account_number' => $request->account_number,
-                    'account_type' => $request->account_type,
+                    'bank_code' => $request->bank_code,
+                    'company_name' => $request->company_name,
                     'is_active' => $request->is_active,
                     'remarks' => $request->remarks,
                 ]);

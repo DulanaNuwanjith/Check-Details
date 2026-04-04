@@ -18,12 +18,7 @@ class BankAccounts extends Model
         'bank_name',
         'branch_name',
         'bank_code',
-        'account_name',
-        'account_number',
-        'account_type',
-        'currency',
-        'opening_balance',
-        'current_balance',
+        'company_name',
         'is_active',
         'remarks'
     ];
@@ -91,10 +86,10 @@ class BankAccounts extends Model
         }
 
         return match ($action) {
-            'created' => "Bank account {$bankAccount->account_name} ({$bankAccount->account_number}) created.",
-            'updated' => "Bank account {$bankAccount->account_name} ({$bankAccount->account_number}) updated.",
-            'deleted' => "Bank account {$bankAccount->account_name} ({$bankAccount->account_number}) deleted.",
-            default   => "Bank account {$bankAccount->account_name} ({$bankAccount->account_number}) {$action}.",
+            'created' => "Bank account {$bankAccount->bank_name} ({$bankAccount->company_name}) created.",
+            'updated' => "Bank account {$bankAccount->bank_name} ({$bankAccount->company_name}) updated.",
+            'deleted' => "Bank account {$bankAccount->bank_name} ({$bankAccount->company_name}) deleted.",
+            default   => "Bank account {$bankAccount->bank_name} ({$bankAccount->company_name}) {$action}.",
         };
     }
 }

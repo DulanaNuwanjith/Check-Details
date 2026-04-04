@@ -20,16 +20,7 @@ return new class extends Migration
             $table->string('bank_code')->nullable(); // optional
 
             // Account Info
-            $table->string('account_name'); // Account holder name
-            $table->string('account_number')->unique();
-
-            // Classification
-            $table->enum('account_type', ['savings', 'current', 'business'])->default('current');
-            $table->string('currency', 10)->default('LKR');
-
-            // Financial Tracking (optional but useful)
-            $table->decimal('opening_balance', 15, 2)->default(0);
-            $table->decimal('current_balance', 15, 2)->default(0);
+            $table->string('company_name');
 
             // Status
             $table->boolean('is_active')->default(true);
