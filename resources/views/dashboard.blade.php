@@ -15,6 +15,7 @@
     @vite(['resources/css/app.css', 'resources/js/app.js'])
     <script defer src="https://unpkg.com/alpinejs@3.x.x/dist/cdn.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css" />
 
     <style>
         body { font-family: 'Outfit', sans-serif; }
@@ -58,11 +59,9 @@
             <!-- Total Received Card -->
             <div class="bg-white p-7 rounded-[2rem] shadow-sm border border-slate-100 hover:shadow-xl hover:shadow-blue-500/5 transition-all duration-300 group">
                 <div class="flex items-start justify-between mb-4">
-                    <div class="w-14 h-14 rounded-2xl bg-emerald-50 flex items-center justify-center text-emerald-600 group-hover:scale-110 transition-transform">
-                        <svg xmlns="http://www.w3.org/2000/svg" class="h-8 w-8" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="9 11l3-3m0 0l3 3m-3-3v8m0-13a9 9 0 110 18 9 9 0 010-18z" />
-                        </svg>
-                    </div>
+                        <div class="w-14 h-14 rounded-2xl bg-emerald-50 flex items-center justify-center text-emerald-600 group-hover:scale-110 transition-transform">
+                            <i class="fa-solid fa-arrow-down-long text-2xl"></i>
+                        </div>
                 </div>
                 <h3 class="text-slate-500 text-sm font-bold uppercase tracking-widest mb-1">Total Received</h3>
                 <p class="text-3xl font-black text-slate-800">LKR {{ number_format($totalReceivedValue, 2) }}</p>
@@ -71,11 +70,9 @@
             <!-- Total Issued Card -->
             <div class="bg-white p-7 rounded-[2rem] shadow-sm border border-slate-100 hover:shadow-xl hover:shadow-rose-500/5 transition-all duration-300 group">
                 <div class="flex items-start justify-between mb-4">
-                    <div class="w-14 h-14 rounded-2xl bg-rose-50 flex items-center justify-center text-rose-600 group-hover:scale-110 transition-transform">
-                        <svg xmlns="http://www.w3.org/2000/svg" class="h-8 w-8" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="15 13l-3 3m0 0l-3-3m3 3V8m0-5a9 9 0 110 18 9 9 0 010-18z" />
-                        </svg>
-                    </div>
+                        <div class="w-14 h-14 rounded-2xl bg-rose-50 flex items-center justify-center text-rose-600 group-hover:scale-110 transition-transform">
+                            <i class="fa-solid fa-arrow-up-long text-2xl"></i>
+                        </div>
                 </div>
                 <h3 class="text-slate-500 text-sm font-bold uppercase tracking-widest mb-1">Total Issued</h3>
                 <p class="text-3xl font-black text-slate-800">LKR {{ number_format($totalIssuedValue, 2) }}</p>
@@ -85,9 +82,7 @@
             <div class="bg-white p-7 rounded-[2rem] shadow-sm border border-slate-100 hover:shadow-xl hover:shadow-blue-500/5 transition-all duration-300 group">
                 <div class="flex items-start justify-between mb-4">
                     <div class="w-14 h-14 rounded-2xl bg-blue-50 flex items-center justify-center text-blue-600 group-hover:scale-110 transition-transform">
-                        <svg xmlns="http://www.w3.org/2000/svg" class="h-8 w-8" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
-                        </svg>
+                        <i class="fa-solid fa-wallet text-2xl"></i>
                     </div>
                 </div>
                 <h3 class="text-slate-500 text-sm font-bold uppercase tracking-widest mb-1">Net Balance</h3>
@@ -99,11 +94,9 @@
             <!-- Total Users Card -->
             <div class="bg-white p-7 rounded-[2rem] shadow-sm border border-slate-100 hover:shadow-xl hover:shadow-violet-500/5 transition-all duration-300 group">
                 <div class="flex items-start justify-between mb-4">
-                    <div class="w-14 h-14 rounded-2xl bg-violet-50 flex items-center justify-center text-violet-600 group-hover:scale-110 transition-transform">
-                        <svg xmlns="http://www.w3.org/2000/svg" class="h-8 w-8" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="12 4.354a4 4 0 110 5.292M15 21H3v-1a6 6 0 0112 0v1zm0 0h6v-1a6 6 0 00-9-5.197M13 7a4 4 0 11-8 0 4 4 0 018 0z" />
-                        </svg>
-                    </div>
+                        <div class="w-14 h-14 rounded-2xl bg-violet-50 flex items-center justify-center text-violet-600 group-hover:scale-110 transition-transform">
+                            <i class="fa-solid fa-users text-2xl"></i>
+                        </div>
                 </div>
                 <h3 class="text-slate-500 text-sm font-bold uppercase tracking-widest mb-1">System Users</h3>
                 <p class="text-3xl font-black text-slate-800">{{ $userCount }}</p>
@@ -161,7 +154,7 @@
             <!-- Recent Activity -->
             <div class="bg-white rounded-[2.5rem] p-8 shadow-sm border border-slate-100">
                 <div class="flex justify-between items-center mb-8">
-                    <h2 class="text-xl font-black text-slate-800">Recent Activity</h2>
+                    <h3 class="text-lg font-black text-slate-800"><i class="fa-solid fa-bolt mr-2 text-amber-500"></i> Recent Activity</h3>
                     <span class="px-4 py-1 bg-slate-50 text-slate-500 rounded-full text-xs font-bold uppercase tracking-widest">Live Updates</span>
                 </div>
                 <div class="space-y-6">
@@ -169,11 +162,11 @@
                         <div class="flex items-center gap-5 p-4 rounded-[1.5rem] hover:bg-slate-50 transition duration-200 group">
                             <div class="w-12 h-12 rounded-xl bg-slate-100 flex items-center justify-center text-slate-500 group-hover:bg-blue-600 group-hover:text-white transition duration-300">
                                 @if($activity->action == 'created')
-                                    <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4" /></svg>
+                                    <i class="fa-solid fa-plus"></i>
                                 @elseif($activity->action == 'updated')
-                                    <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15" /></svg>
+                                    <i class="fa-solid fa-pen"></i>
                                 @else
-                                    <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" /></svg>
+                                    <i class="fa-solid fa-circle-info"></i>
                                 @endif
                             </div>
                             <div class="flex-1">
@@ -197,7 +190,7 @@
 
             <!-- Bank Health Overview -->
             <div class="bg-white rounded-[2.5rem] p-8 shadow-sm border border-slate-100">
-                <h2 class="text-xl font-black text-slate-800 mb-8">Bank Operational Health</h2>
+                <h3 class="text-lg font-black text-slate-800 mb-8"><i class="fa-solid fa-building-columns mr-2 text-blue-600"></i> Bank Operational Health</h3>
                 <div class="space-y-6">
                     @forelse($bankHealth as $bank)
                         <div class="p-6 rounded-[2rem] bg-slate-50/80 border border-slate-100 flex items-center justify-between group hover:bg-white hover:shadow-xl hover:shadow-blue-500/5 transition duration-300">
