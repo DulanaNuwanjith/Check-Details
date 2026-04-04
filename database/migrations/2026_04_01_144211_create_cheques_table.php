@@ -59,6 +59,11 @@ return new class extends Migration {
             $table->text('remarks')->nullable();
             $table->string('reference_no')->nullable(); // internal ref
 
+            //Cheque Issued to Details
+            $table->string('cheque_issued_to')->nullable();
+            $table->date('cheque_issued_date')->nullable();
+            $table->string('cheque_issued_by')->nullable();
+
             // Softly delete audit safety
             $table->softDeletes();
 
