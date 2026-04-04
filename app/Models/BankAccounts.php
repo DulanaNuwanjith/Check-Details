@@ -2,9 +2,10 @@
 
 namespace App\Models;
 
+use Exception;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Support\Facades\Auth;
-use App\Models\ActivityLog;
 
 /**
  * @method static findOrFail(int $id)
@@ -57,22 +58,22 @@ class BankAccounts extends Model
     {
         try {
             ActivityLog::create([
-                'module'      => 'bank_account',
-                'module_id'   => $bankAccount?->id,
-                'action'      => $action,
-                'user_id'     => Auth::id(),
+                'module' => 'bank_account',
+                'module_id' => $bankAccount?->id,
+                'action' => $action,
+                'user_id' => Auth::id(),
 
-                'old_values'  => $oldValues,
-                'new_values'  => $newValues,
+                'old_values' => $oldValues,
+                'new_values' => $newValues,
 
                 'description' => self::generateDescription($action, $bankAccount),
 
-                'ip_address'  => request()->ip(),
-                'user_agent'  => request()->userAgent(),
+                'ip_address' => request()->ip(),
+                'user_agent' => request()->userAgent(),
 
-                'status'      => $bankAccount?->is_active,
+                'status' => $bankAccount?->is_active,
             ]);
-        } catch (\Exception $e) {
+        } catch (Exception $e) {
             // Prevent breaking the app if logging fails
         }
     }
@@ -90,7 +91,12 @@ class BankAccounts extends Model
             'created' => "Bank account {$bankAccount->bank_name} ({$bankAccount->company_name}) created.",
             'updated' => "Bank account {$bankAccount->bank_name} ({$bankAccount->company_name}) updated.",
             'deleted' => "Bank account {$bankAccount->bank_name} ({$bankAccount->company_name}) deleted.",
-            default   => "Bank account {$bankAccount->bank_name} ({$bankAccount->company_name}) {$action}.",
+            default => "Bank account {$bankAccount->bank_name} ({$bankAccount->company_name}) {$action}.",
         };
+    }
+
+    public function cheques(): HasMany
+    {
+        return $this->hasMany(Cheque::class, 'bank_account_id');
     }
 }

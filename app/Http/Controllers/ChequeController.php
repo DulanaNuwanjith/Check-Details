@@ -21,7 +21,7 @@ class ChequeController extends Controller
      */
     public function index()
     {
-        $cheques = Cheque::latest()->paginate(10);
+        $cheques = Cheque::with('bankAccount')->latest()->paginate(10);
         $bankAccounts = BankAccounts::all();
         return view('cheque-detail.index', compact('cheques', 'bankAccounts'));
     }

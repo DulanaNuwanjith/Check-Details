@@ -127,7 +127,7 @@
                             </td>
 
                             <td class="px-6 py-4 font-semibold text-gray-700">
-                                {{ $cheque->bank_name }}
+                                {{ $cheque->bank_name }} - {{ $cheque->company_name }}
                             </td>
 
                             <td class="px-6 py-4 text-gray-500">
@@ -433,43 +433,100 @@
 
         <!-- VIEW CHEQUE MODAL -->
         <div x-show="viewModal" x-transition.opacity x-cloak
-             class="fixed inset-0 bg-black/40 flex items-center justify-center z-50">
+             class="fixed inset-0 bg-black/50 flex items-center justify-center z-50">
 
-            <div @click.away="viewModal = false" class="bg-white rounded-2xl w-full max-w-2xl p-6 shadow-xl">
+            <div @click.away="viewModal = false"
+                 class="bg-white rounded-2xl w-full max-w-3xl p-6 shadow-2xl overflow-auto max-h-[90vh]">
 
-                <div class="flex justify-between items-center mb-6">
-                    <h3 class="text-xl font-bold">Cheque Details</h3>
-                    <button @click="viewModal = false" class="text-gray-400 hover:text-gray-600 text-xl">✕</button>
+                <div class="flex justify-between items-center mb-6 border-b pb-3">
+                    <h3 class="text-2xl font-bold text-gray-800">Cheque Details</h3>
+                    <button @click="viewModal = false" class="text-gray-400 hover:text-gray-600 text-2xl">✕</button>
                 </div>
 
-                <div class="grid grid-cols-2 gap-4 text-gray-700">
-                    <div><strong>Cheque No:</strong> <span x-text="selectedCheque?.cheque_no"></span></div>
-                    <div><strong>Type:</strong> <span
-                            x-text="selectedCheque?.cheque_type === 'received' ? 'Received' : 'Issued'"></span></div>
-                    <div><strong>Bank:</strong> <span x-text="selectedCheque?.bank_name"></span></div>
-                    <div><strong>Branch:</strong> <span x-text="selectedCheque?.branch_name"></span></div>
-                    <div><strong>Account No:</strong> <span x-text="selectedCheque?.account_no"></span></div>
-                    <div><strong>Amount:</strong> <span
-                            x-text="parseFloat(selectedCheque?.cheque_amount).toFixed(2)"></span></div>
-                    <div><strong>Cheque Date:</strong> <span
-                            x-text="new Date(selectedCheque?.cheque_date).toLocaleDateString()"></span></div>
-                    <div><strong>Expiry Date:</strong> <span
-                            x-text="selectedCheque?.cheque_exp_date ? new Date(selectedCheque.cheque_exp_date).toLocaleDateString() : '-'"></span>
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-6 text-gray-700">
+
+                    <!-- Cheque Core Info -->
+                    <div class="p-4 bg-gray-50 rounded-lg shadow-sm">
+                        <h4 class="font-semibold text-gray-600 mb-2">Cheque Info</h4>
+                        <div class="flex justify-between py-1">
+                            <span class="font-medium">Cheque No:</span>
+                            <span x-text="selectedCheque?.cheque_no"></span>
+                        </div>
+                        <div class="flex justify-between py-1">
+                            <span class="font-medium">Type:</span>
+                            <span x-text="selectedCheque?.cheque_type === 'received' ? 'Received' : 'Issued'"></span>
+                        </div>
+                        <div class="flex justify-between py-1">
+                            <span class="font-medium">Amount:</span>
+                            <span x-text="parseFloat(selectedCheque?.cheque_amount).toFixed(2)"></span>
+                        </div>
+                        <div class="flex justify-between py-1">
+                            <span class="font-medium">Cheque Date:</span>
+                            <span x-text="new Date(selectedCheque?.cheque_date).toLocaleDateString()"></span>
+                        </div>
+                        <div class="flex justify-between py-1">
+                            <span class="font-medium">Expiry Date:</span>
+                            <span x-text="selectedCheque?.cheque_exp_date ? new Date(selectedCheque.cheque_exp_date).toLocaleDateString() : '-'"></span>
+                        </div>
+                        <div class="flex justify-between py-1">
+                            <span class="font-medium">Status:</span>
+                            <span x-text="selectedCheque?.status.charAt(0).toUpperCase() + selectedCheque?.status.slice(1)"></span>
+                        </div>
                     </div>
-                    <div><strong>Status:</strong> <span
-                            x-text="selectedCheque?.status.charAt(0).toUpperCase() + selectedCheque?.status.slice(1)"></span>
+
+                    <!-- Bank Info -->
+                    <div class="p-4 bg-gray-50 rounded-lg shadow-sm">
+                        <h4 class="font-semibold text-gray-600 mb-2">Bank Info</h4>
+                        <div class="flex justify-between py-1">
+                            <span class="font-medium">Bank Name:</span>
+                            <span x-text="selectedCheque?.bank_name"></span>
+                        </div>
+                        <div class="flex justify-between py-1">
+                            <span class="font-medium">Company:</span>
+                            <span x-text="selectedCheque?.company_name || '-'"></span>
+                        </div>
+                        <div class="flex justify-between py-1">
+                            <span class="font-medium">Branch:</span>
+                            <span x-text="selectedCheque?.branch_name || '-'"></span>
+                        </div>
+                        <div class="flex justify-between py-1">
+                            <span class="font-medium">Account No:</span>
+                            <span x-text="selectedCheque?.account_no || '-'"></span>
+                        </div>
+                        <div class="flex justify-between py-1">
+                            <span class="font-medium">Bank Charges:</span>
+                            <span x-text="parseFloat(selectedCheque?.bank_charges).toFixed(2)"></span>
+                        </div>
+                        <div class="flex justify-between py-1">
+                            <span class="font-medium">Penalty:</span>
+                            <span x-text="parseFloat(selectedCheque?.penalty_amount).toFixed(2)"></span>
+                        </div>
                     </div>
-                    <div><strong>Deposit Date:</strong> <span
-                            x-text="selectedCheque?.deposit_date ? new Date(selectedCheque.deposit_date).toLocaleDateString() : '-'"></span>
+
+                    <!-- Dates -->
+                    <div class="p-4 bg-gray-50 rounded-lg shadow-sm col-span-2">
+                        <h4 class="font-semibold text-gray-600 mb-2">Important Dates</h4>
+                        <div class="grid grid-cols-2 gap-4">
+                            <div>
+                                <span class="font-medium">Deposit Date:</span>
+                                <span x-text="selectedCheque?.deposit_date ? new Date(selectedCheque.deposit_date).toLocaleDateString() : '-'"></span>
+                            </div>
+                            <div>
+                                <span class="font-medium">Realization Date:</span>
+                                <span x-text="selectedCheque?.realization_date ? new Date(selectedCheque.realization_date).toLocaleDateString() : '-'"></span>
+                            </div>
+                            <div>
+                                <span class="font-medium">Bounce Date:</span>
+                                <span x-text="selectedCheque?.bounce_date ? new Date(selectedCheque.bounce_date).toLocaleDateString() : '-'"></span>
+                            </div>
+                        </div>
                     </div>
-                    <div><strong>Realization Date:</strong> <span
-                            x-text="selectedCheque?.realization_date ? new Date(selectedCheque.realization_date).toLocaleDateString() : '-'"></span>
+
+                    <!-- Remarks -->
+                    <div class="p-4 bg-gray-50 rounded-lg shadow-sm col-span-2">
+                        <h4 class="font-semibold text-gray-600 mb-2">Remarks</h4>
+                        <p x-text="selectedCheque?.remarks || '-'"></p>
                     </div>
-                    <div><strong>Bounce Date:</strong> <span
-                            x-text="selectedCheque?.bounce_date ? new Date(selectedCheque.bounce_date).toLocaleDateString() : '-'"></span>
-                    </div>
-                    <div class="col-span-2"><strong>Remarks:</strong> <span
-                            x-text="selectedCheque?.remarks || '-'"></span></div>
                 </div>
 
                 <div class="flex justify-end mt-6">
@@ -478,7 +535,6 @@
                         Close
                     </button>
                 </div>
-
             </div>
         </div>
 

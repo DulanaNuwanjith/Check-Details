@@ -2,7 +2,9 @@
 
 namespace App\Models;
 
+use Exception;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Support\Facades\Auth;
 
 /**
@@ -13,6 +15,8 @@ use Illuminate\Support\Facades\Auth;
  */
 class Cheque extends Model
 {
+    use HasFactory;
+
     protected $fillable = [
         'cheque_no',
         'cheque_date',
@@ -73,22 +77,22 @@ class Cheque extends Model
     {
         try {
             ActivityLog::create([
-                'module'      => 'cheque',
-                'module_id'   => $cheque?->id,
-                'action'      => $action,
-                'user_id'     => Auth::id(),
+                'module' => 'cheque',
+                'module_id' => $cheque?->id,
+                'action' => $action,
+                'user_id' => Auth::id(),
 
-                'old_values'  => $oldValues,
-                'new_values'  => $newValues,
+                'old_values' => $oldValues,
+                'new_values' => $newValues,
 
                 'description' => self::generateDescription($action, $cheque),
 
-                'ip_address'  => request()->ip(),
-                'user_agent'  => request()->userAgent(),
+                'ip_address' => request()->ip(),
+                'user_agent' => request()->userAgent(),
 
-                'status'      => $cheque?->status,
+                'status' => $cheque?->status,
             ]);
-        } catch (\Exception $e) {
+        } catch (Exception $e) {
             // Avoid breaking the app if logging fails
         }
     }
@@ -106,7 +110,15 @@ class Cheque extends Model
             'created' => "Cheque {$cheque->cheque_no} created.",
             'updated' => "Cheque {$cheque->cheque_no} updated.",
             'deleted' => "Cheque {$cheque->cheque_no} deleted.",
-            default   => "Cheque {$cheque->cheque_no} {$action}.",
+            default => "Cheque {$cheque->cheque_no} {$action}.",
         };
+    }
+
+    /**
+     * Cheque has a bank account
+     */
+    public function bankAccount(): BelongsTo
+    {
+        return $this->belongsTo(BankAccounts::class, 'bank_account_id');
     }
 }
