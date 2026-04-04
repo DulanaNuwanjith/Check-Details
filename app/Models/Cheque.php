@@ -22,6 +22,7 @@ class Cheque extends Model
         'bank_account_id',
         'bank_name',
         'branch_name',
+        'company_name',
         'cheque_type',
         'status',
         'deposit_date',

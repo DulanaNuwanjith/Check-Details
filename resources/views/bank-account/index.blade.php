@@ -8,7 +8,7 @@
     <title>Bank Account Management</title>
 
     <link rel="preconnect" href="https://fonts.bunny.net">
-    <link href="https://fonts.bunny.net/css?family=Outfit:400,500,600,700,800&display=swap" rel="stylesheet" />
+    <link href="https://fonts.bunny.net/css?family=Outfit:400,500,600,700,800&display=swap" rel="stylesheet"/>
 
     @vite(['resources/css/app.css', 'resources/js/app.js'])
     <script defer src="https://unpkg.com/alpinejs@3.x.x/dist/cdn.min.js"></script>
@@ -16,11 +16,17 @@
     @livewireStyles
 
     <style>
-        body { font-family: 'Outfit', sans-serif; }
-        [x-cloak] { display: none !important; }
+        body {
+            font-family: 'Outfit', sans-serif;
+        }
+
+        [x-cloak] {
+            display: none !important;
+        }
     </style>
 </head>
 
+<!-- Success Message -->
 @if(session('success'))
     <script>
         document.addEventListener('DOMContentLoaded', function () {
@@ -34,9 +40,38 @@
     </script>
 @endif
 
+<!-- Error Message -->
+@if(session('error'))
+    <script>
+        document.addEventListener('DOMContentLoaded', function () {
+            Swal.fire({
+                icon: 'error',
+                title: 'Error',
+                text: "{{ session('error') }}",
+                confirmButtonColor: '#dc2626'
+            });
+        });
+    </script>
+@endif
+
+<!-- Validation Errors -->
+@if($errors->any())
+    <script>
+        document.addEventListener('DOMContentLoaded', function () {
+            let errors = @json($errors->all(), JSON_THROW_ON_ERROR);
+            Swal.fire({
+                icon: 'error',
+                title: 'Validation Error',
+                html: errors.join('<br>'),
+                confirmButtonColor: '#dc2626'
+            });
+        });
+    </script>
+@endif
+
 <body class="text-gray-900 bg-gray-50 flex h-screen overflow-hidden antialiased">
 
-<x-sidebar />
+<x-sidebar/>
 
 <div class="flex-1 flex flex-col h-screen overflow-hidden"
      x-data="{ openBankModal: false, bankForm: {} }">
@@ -176,9 +211,9 @@
 
                 <!-- FORM -->
                 <form :action="bankForm.id
-                                ? `/bank-accounts/${bankForm.id}`
-                                : '{{ route('bank-accounts.store') }}'"
-                                                            method="POST">
+                ? `/bank-accounts/${bankForm.id}`
+                : '{{ route('bank-accounts.store') }}'"
+                      method="POST">
                     @csrf
                     <template x-if="bankForm.id">
                         <input type="hidden" name="_method" value="PATCH">
@@ -186,37 +221,73 @@
 
                     <div class="grid grid-cols-2 gap-4">
 
-                        <input type="text" name="bank_name"
-                               placeholder="Bank Name"
-                               x-model="bankForm.bank_name"
-                               required class="p-2 border rounded-lg">
+                        <!-- Bank Name (Required) -->
+                        <div class="flex flex-col">
+                            <label class="mb-1 text-gray-700 font-medium">
+                                Bank Name <span class="text-red-500">*</span>
+                            </label>
+                            <input type="text" name="bank_name"
+                                   placeholder="Bank Name"
+                                   x-model="bankForm.bank_name"
+                                   required class="p-2 border rounded-lg">
+                        </div>
 
-                        <input type="text" name="branch_name"
-                               placeholder="Branch Name"
-                               x-model="bankForm.branch_name"
-                               class="p-2 border rounded-lg">
+                        <!-- Branch Name (Optional) -->
+                        <div class="flex flex-col">
+                            <label class="mb-1 text-gray-700 font-medium">
+                                Branch Name
+                            </label>
+                            <input type="text" name="branch_name"
+                                   placeholder="Branch Name"
+                                   x-model="bankForm.branch_name"
+                                   class="p-2 border rounded-lg">
+                        </div>
 
-                        <input type="text" name="bank_code"
-                               placeholder="Bank Code"
-                               x-model="bankForm.bank_code"
-                               class="p-2 border rounded-lg">
+                        <!-- Bank Code (Optional) -->
+                        <div class="flex flex-col">
+                            <label class="mb-1 text-gray-700 font-medium">
+                                Bank Code
+                            </label>
+                            <input type="text" name="bank_code"
+                                   placeholder="Bank Code"
+                                   x-model="bankForm.bank_code"
+                                   class="p-2 border rounded-lg">
+                        </div>
 
-                        <input type="text" name="company_name"
-                               placeholder="Company Name"
-                               x-model="bankForm.company_name"
-                               required class="p-2 border rounded-lg">
+                        <!-- Company Name (Required) -->
+                        <div class="flex flex-col">
+                            <label class="mb-1 text-gray-700 font-medium">
+                                Company Name <span class="text-red-500">*</span>
+                            </label>
+                            <input type="text" name="company_name"
+                                   placeholder="Company Name"
+                                   x-model="bankForm.company_name"
+                                   required class="p-2 border rounded-lg">
+                        </div>
 
-                        <select name="is_active"
-                                class="p-2 border rounded-lg col-span-2"
-                                x-model="bankForm.is_active">
-                            <option value="1">Active</option>
-                            <option value="0">Inactive</option>
-                        </select>
+                        <!-- Status (Optional) -->
+                        <div class="flex flex-col col-span-2">
+                            <label class="mb-1 text-gray-700 font-medium">
+                                Status
+                            </label>
+                            <select name="is_active"
+                                    class="p-2 border rounded-lg"
+                                    x-model="bankForm.is_active">
+                                <option value="1">Active</option>
+                                <option value="0">Inactive</option>
+                            </select>
+                        </div>
 
-                        <textarea name="remarks"
-                                  placeholder="Remarks"
-                                  class="col-span-2 p-2 border rounded-lg"
-                                  x-model="bankForm.remarks"></textarea>
+                        <!-- Remarks (Optional) -->
+                        <div class="flex flex-col col-span-2">
+                            <label class="mb-1 text-gray-700 font-medium">
+                                Remarks
+                            </label>
+                            <textarea name="remarks"
+                                      placeholder="Remarks"
+                                      class="p-2 border rounded-lg"
+                                      x-model="bankForm.remarks"></textarea>
+                        </div>
 
                     </div>
 
@@ -233,7 +304,6 @@
                         </button>
                     </div>
                 </form>
-
             </div>
         </div>
 

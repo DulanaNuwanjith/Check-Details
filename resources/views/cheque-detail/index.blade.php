@@ -29,6 +29,49 @@
     </style>
 </head>
 
+<!-- Success Message -->
+@if(session('success'))
+    <script>
+        document.addEventListener('DOMContentLoaded', function () {
+            Swal.fire({
+                icon: 'success',
+                title: 'Success',
+                text: "{{ session('success') }}",
+                confirmButtonColor: '#16a34a'
+            });
+        });
+    </script>
+@endif
+
+<!-- Error Message -->
+@if(session('error'))
+    <script>
+        document.addEventListener('DOMContentLoaded', function () {
+            Swal.fire({
+                icon: 'error',
+                title: 'Error',
+                text: "{{ session('error') }}",
+                confirmButtonColor: '#dc2626'
+            });
+        });
+    </script>
+@endif
+
+<!-- Validation Errors -->
+@if($errors->any())
+    <script>
+        document.addEventListener('DOMContentLoaded', function () {
+            let errors = @json($errors->all(), JSON_THROW_ON_ERROR);
+            Swal.fire({
+                icon: 'error',
+                title: 'Validation Error',
+                html: errors.join('<br>'),
+                confirmButtonColor: '#dc2626'
+            });
+        });
+    </script>
+@endif
+
 <body class="text-gray-900 bg-gray-50 flex h-screen overflow-hidden antialiased">
 
 <!-- Sidebar -->

@@ -32,7 +32,7 @@ class BankAccountsController extends Controller
         $rules = [
             'bank_name' => 'required|string|max:255',
             'branch_name' => 'nullable|string|max:255',
-            'bank_code' => 'required|string|max:255',
+            'bank_code' => 'nullable|string|max:255',
             'company_name' => 'required|string|max:255',
             'is_active' => 'required|boolean',
             'remarks' => 'nullable|string|max:1000',
@@ -90,7 +90,7 @@ class BankAccountsController extends Controller
         $rules = [
             'bank_name' => 'required|string|max:255',
             'branch_name' => 'nullable|string|max:255',
-            'bank_code' => 'required|string|max:255',
+            'bank_code' => 'nullable|string|max:255',
             'company_name' => 'required|string|max:255',
             'is_active' => 'required|boolean',
             'remarks' => 'nullable|string|max:1000',

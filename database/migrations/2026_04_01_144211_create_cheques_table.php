@@ -23,6 +23,7 @@ return new class extends Migration {
             // Bank details
             $table->unsignedBigInteger('bank_account_id')->nullable()->index(); // FK to bank_accounts
             $table->string('bank_name');
+            $table->string('company_name')->nullable();
             $table->string('branch_name')->nullable();
 
             // Type & classification
