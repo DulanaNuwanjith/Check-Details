@@ -5,6 +5,10 @@
 <style>
     [x-cloak] { display: none !important; }
     
+    .sidebar-label {
+        display: var(--sidebar-label-display, block) !important;
+    }
+    
     .sidebar-item { transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1); }
     .sidebar-active {
         background: #2563eb !important;
@@ -21,10 +25,13 @@
 </style>
 
 <script>
-    const savedSidebarState = localStorage.getItem('sidebarCollapsed');
-    const initialCollapsed = savedSidebarState ? JSON.parse(savedSidebarState) : false;
-    window.__initialCollapsed = initialCollapsed;
-    document.documentElement.style.setProperty('--sidebar-width', initialCollapsed ? '6rem' : '18rem');
+    (function() {
+        const savedSidebarState = localStorage.getItem('sidebarCollapsed');
+        const initialCollapsed = savedSidebarState ? JSON.parse(savedSidebarState) : false;
+        window.__initialCollapsed = initialCollapsed;
+        document.documentElement.style.setProperty('--sidebar-width', initialCollapsed ? '6rem' : '18rem');
+        document.documentElement.style.setProperty('--sidebar-label-display', initialCollapsed ? 'none' : 'block');
+    })();
 </script>
 
 <aside x-data="{
@@ -35,6 +42,7 @@
             this.collapsed = !this.collapsed;
             localStorage.setItem('sidebarCollapsed', JSON.stringify(this.collapsed));
             document.documentElement.style.setProperty('--sidebar-width', this.collapsed ? '6rem' : '18rem');
+            document.documentElement.style.setProperty('--sidebar-label-display', this.collapsed ? 'none' : 'block');
         }
     }"
     x-init="initialized = true"
@@ -51,7 +59,7 @@
             <div class="w-11 h-11 bg-blue-600 rounded-2xl flex items-center justify-center shrink-0 shadow-lg shadow-blue-200 text-white transform transition hover:rotate-6">
                 <i class="fa-solid fa-layer-group text-xl"></i>
             </div>
-            <div x-show="!collapsed" x-transition:enter="transition ease-out duration-300" x-transition:enter-start="opacity-0 -translate-x-4" x-transition:enter-end="opacity-100 translate-x-0">
+            <div x-cloak x-show="!collapsed" class="sidebar-label" x-transition:enter="transition ease-out duration-300" x-transition:enter-start="opacity-0 -translate-x-4" x-transition:enter-end="opacity-100 translate-x-0">
                 <span class="block font-black text-xl text-slate-800 tracking-tight leading-none group">CheckDetails</span>
                 <span class="text-[10px] font-black uppercase tracking-[0.2em] text-slate-400 mt-1 block">Enterprise v1.0</span>
             </div>
@@ -68,7 +76,7 @@
     <!-- Main Navigation -->
     <nav class="flex-1 px-4 space-y-2 overflow-y-auto scroll-hidden pt-4">
         
-        <p x-show="!collapsed" class="px-4 text-[10px] font-black uppercase tracking-[0.3em] text-slate-300 mb-4">Core Menu</p>
+        <p x-cloak x-show="!collapsed" class="sidebar-label px-4 text-[10px] font-black uppercase tracking-[0.3em] text-slate-300 mb-4">Core Menu</p>
 
         <!-- Dashboard -->
         <a href="{{ route('dashboard') }}"
@@ -77,7 +85,7 @@
             <div class="w-8 flex justify-center items-center">
                 <i class="fa-solid fa-house-chimney text-lg transition-transform group-hover:scale-110"></i>
             </div>
-            <span x-show="!collapsed" class="ml-3 tracking-tight whitespace-nowrap">Dashboard Overview</span>
+            <span x-cloak x-show="!collapsed" class="sidebar-label ml-3 tracking-tight whitespace-nowrap">Dashboard Overview</span>
         </a>
 
         <!-- Check Details -->
@@ -87,7 +95,7 @@
             <div class="w-8 flex justify-center items-center">
                 <i class="fa-solid fa-money-check-dollar text-lg transition-transform group-hover:scale-110"></i>
             </div>
-            <span x-show="!collapsed" class="ml-3 tracking-tight whitespace-nowrap">Cheque Management</span>
+            <span x-cloak x-show="!collapsed" class="sidebar-label ml-3 tracking-tight whitespace-nowrap">Cheque Management</span>
         </a>
 
         <!-- Bank Accounts -->
@@ -97,11 +105,11 @@
             <div class="w-8 flex justify-center items-center">
                 <i class="fa-solid fa-building-columns text-lg transition-transform group-hover:scale-110"></i>
             </div>
-            <span x-show="!collapsed" class="ml-3 tracking-tight whitespace-nowrap">Bank Accounts</span>
+            <span x-cloak x-show="!collapsed" class="sidebar-label ml-3 tracking-tight whitespace-nowrap">Bank Accounts</span>
         </a>
 
         <div class="my-8 h-px bg-slate-50 mx-4"></div>
-        <p x-show="!collapsed" class="px-4 text-[10px] font-black uppercase tracking-[0.3em] text-slate-300 mb-4">Operations</p>
+        <p x-cloak x-show="!collapsed" class="sidebar-label px-4 text-[10px] font-black uppercase tracking-[0.3em] text-slate-300 mb-4">Operations</p>
 
         <!-- User Management -->
         <a href="#"
@@ -110,7 +118,7 @@
             <div class="w-8 flex justify-center items-center">
                 <i class="fa-solid fa-users-gear text-lg transition-transform group-hover:scale-110"></i>
             </div>
-            <span x-show="!collapsed" class="ml-3 tracking-tight whitespace-nowrap">User Access Control</span>
+            <span x-cloak x-show="!collapsed" class="sidebar-label ml-3 tracking-tight whitespace-nowrap">User Access Control</span>
         </a>
 
         <!-- Reports -->
@@ -120,7 +128,7 @@
             <div class="w-8 flex justify-center items-center">
                 <i class="fa-solid fa-chart-pie text-lg transition-transform group-hover:scale-110"></i>
             </div>
-            <span x-show="!collapsed" class="ml-3 tracking-tight whitespace-nowrap">Financial Reports</span>
+            <span x-cloak x-show="!collapsed" class="sidebar-label ml-3 tracking-tight whitespace-nowrap">Financial Reports</span>
         </a>
 
         <!-- Settings -->
@@ -130,26 +138,33 @@
             <div class="w-8 flex justify-center items-center">
                 <i class="fa-solid fa-sliders text-lg transition-transform group-hover:scale-110"></i>
             </div>
-            <span x-show="!collapsed" class="ml-3 tracking-tight whitespace-nowrap">System Settings</span>
+            <span x-cloak x-show="!collapsed" class="sidebar-label ml-3 tracking-tight whitespace-nowrap">System Settings</span>
         </a>
     </nav>
 
     <!-- Footer Profile -->
-    <div class="p-4 border-t border-slate-50 bg-slate-50/50">
-        <div class="bg-white p-4 rounded-3xl shadow-sm border border-slate-100 flex items-center group transition hover:shadow-md">
-            <div class="relative">
-                <img class="w-11 h-11 rounded-2xl object-cover border-2 border-white shadow-sm"
-                     src="{{ Auth::user() ? Auth::user()->profile_photo_url : 'https://ui-avatars.com/api/?name=User&color=3b82f6&background=eff6ff' }}" alt="Profile" />
-                <div class="absolute -bottom-1 -right-1 w-4 h-4 bg-emerald-500 border-2 border-white rounded-full"></div>
-            </div>
-            <div x-show="!collapsed" class="ml-4 flex-1">
-                <p class="text-slate-800 font-bold text-sm tracking-tight truncate leading-tight">{{ Auth::user()->name ?? 'Administrator' }}</p>
-                <p class="text-slate-400 text-[10px] font-black uppercase tracking-widest mt-0.5 truncate">{{ Auth::user()->role ?? 'Super Admin' }}</p>
-            </div>
+    <div class="p-3 border-t border-slate-50 bg-slate-50/50" :class="collapsed ? 'px-2' : 'p-4'">
+        <div class="flex items-center gap-2" :class="collapsed ? 'justify-center' : ''">
+            <a href="{{ route('profile.show') }}" 
+               class="bg-white rounded-2xl shadow-sm border border-slate-100 flex items-center group transition hover:shadow-md active:scale-[0.98] transition-all duration-300"
+               :class="collapsed ? 'p-2 justify-center w-12 h-12 rounded-xl' : 'flex-1 p-4 rounded-3xl'">
+                <div class="relative shrink-0">
+                    <img class="rounded-xl object-cover border-2 border-white shadow-sm transition-all duration-300"
+                         :class="collapsed ? 'w-8 h-8' : 'w-11 h-11 rounded-2xl'"
+                         src="{{ Auth::user() ? Auth::user()->profile_photo_url : 'https://ui-avatars.com/api/?name=User&color=3b82f6&background=eff6ff' }}" alt="Profile" />
+                    <div class="absolute -bottom-1 -right-1 bg-emerald-500 border-2 border-white rounded-full transition-all"
+                         :class="collapsed ? 'w-3 h-3' : 'w-4 h-4'"></div>
+                </div>
+                <div x-cloak x-show="!collapsed" x-transition.opacity class="sidebar-label ml-4 truncate">
+                    <p class="text-slate-800 font-bold text-sm tracking-tight truncate leading-tight group-hover:text-blue-600 transition">{{ Auth::user()->name ?? 'Administrator' }}</p>
+                    <p class="text-slate-400 text-[10px] font-black uppercase tracking-widest mt-0.5 truncate">{{ Auth::user()->role ?? 'Super Admin' }}</p>
+                </div>
+            </a>
+            
             <template x-if="!collapsed">
-                <form method="POST" action="{{ route('logout') }}" class="ml-2">
+                <form method="POST" action="{{ route('logout') }}">
                     @csrf
-                    <button type="submit" class="w-9 h-9 rounded-xl flex items-center justify-center text-slate-300 hover:text-rose-500 hover:bg-rose-50 transition active:scale-95">
+                    <button type="submit" class="w-11 h-11 rounded-2xl flex items-center justify-center text-slate-300 hover:text-rose-500 hover:bg-rose-50 transition active:scale-95 shadow-sm bg-white border border-slate-100">
                         <i class="fa-solid fa-power-off"></i>
                     </button>
                 </form>
@@ -158,13 +173,14 @@
         
         <!-- Collapsed Logout Shortcut -->
         <template x-if="collapsed">
-            <form method="POST" action="{{ route('logout') }}" class="mt-4">
+            <form method="POST" action="{{ route('logout') }}" class="mt-3 flex justify-center">
                 @csrf
-                <button type="submit" class="w-full h-11 rounded-2xl flex items-center justify-center text-slate-300 hover:text-rose-500 hover:bg-rose-50 transition group" title="Logout">
-                    <i class="fa-solid fa-power-off text-lg"></i>
+                <button type="submit" class="w-10 h-10 rounded-xl flex items-center justify-center text-slate-300 hover:text-rose-500 hover:bg-rose-50 transition group bg-white border border-slate-100 shadow-sm" title="Logout">
+                    <i class="fa-solid fa-power-off text-sm"></i>
                 </button>
             </form>
         </template>
     </div>
 </aside>
+
 
