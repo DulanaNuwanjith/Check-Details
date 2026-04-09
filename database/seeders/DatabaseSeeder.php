@@ -16,11 +16,11 @@ class DatabaseSeeder extends Seeder
     {
         // ✅ Create SuperAdmin User
         User::create([
-            'first_name' => 'Admin',
-            'last_name' => 'Super',
-            'email' => 'admin@gmail.com',
-            'password' => Hash::make('12345678'),
-            'nic' => '200502000073',
+            'first_name' => 'Dulana',
+            'last_name' => 'Nuwanjith',
+            'email' => 'dulana69@gmail.com',
+            'password' => Hash::make('Dulana@123'),
+            'nic' => '199916000833',
             'role' => 'superadmin',
         ]);
 
